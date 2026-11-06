@@ -1,0 +1,684 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ningxia-wine:clean-data:1.0",
+  "title": "宁夏葡萄酒清洗记录Schema（各JSONL按同名$defs逐行验证）",
+  "$defs": {
+    "sources": {
+      "type": "object",
+      "required": [
+        "source_id",
+        "title",
+        "raw_file",
+        "evidence_form",
+        "dataset_role"
+      ],
+      "properties": {
+        "source_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "raw_file": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence_form": {
+          "enum": [
+            "original_text",
+            "collector_summary",
+            "search_snippet",
+            "user_comment",
+            "unknown"
+          ]
+        },
+        "dataset_role": {
+          "enum": [
+            "real",
+            "demo"
+          ]
+        }
+      },
+      "additionalProperties": true
+    },
+    "wineries": {
+      "type": "object",
+      "required": [
+        "winery_id",
+        "name",
+        "source_ids",
+        "raw_locator",
+        "review_status"
+      ],
+      "properties": {
+        "source_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "raw_locator": {
+          "type": "string",
+          "minLength": 1
+        },
+        "review_status": {
+          "enum": [
+            "accepted",
+            "review",
+            "excluded"
+          ]
+        },
+        "winery_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "region_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "founded_year": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": true
+    },
+    "products": {
+      "type": "object",
+      "required": [
+        "product_id",
+        "winery_id",
+        "name",
+        "vintage_status",
+        "record_scope",
+        "field_filter_eligibility",
+        "source_ids",
+        "raw_locator",
+        "review_status"
+      ],
+      "properties": {
+        "source_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "raw_locator": {
+          "type": "string",
+          "minLength": 1
+        },
+        "review_status": {
+          "enum": [
+            "accepted",
+            "review",
+            "excluded"
+          ]
+        },
+        "product_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "winery_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "vintage": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "vintage_status": {
+          "enum": [
+            "specified",
+            "non_vintage",
+            "unspecified",
+            "mixed"
+          ]
+        },
+        "record_scope": {
+          "enum": [
+            "specific_variant",
+            "unspecified_product_page",
+            "catalog_candidate",
+            "mixed_variant"
+          ]
+        },
+        "volume_ml": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "exclusiveMinimum": 0
+        },
+        "color": {
+          "enum": [
+            "red",
+            "white",
+            "rose",
+            "other",
+            null
+          ]
+        },
+        "sweetness": {
+          "enum": [
+            "dry",
+            "semi_dry",
+            "semi_sweet",
+            "sweet",
+            "other",
+            null
+          ]
+        },
+        "alcohol_pct_vol": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 100
+        },
+        "price_cny": {
+          "type": "null"
+        },
+        "grape_varieties": {
+          "type": "array"
+        },
+        "strict_product_filter_eligible": {
+          "type": "boolean"
+        },
+        "field_filter_eligibility": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "boolean"
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "price_observations": {
+      "type": "object",
+      "required": [
+        "price_id",
+        "product_id",
+        "amount_min",
+        "amount_max",
+        "currency",
+        "unit",
+        "price_type",
+        "current_retail_eligible",
+        "strict_price_filter_eligible",
+        "source_ids",
+        "raw_locator",
+        "review_status"
+      ],
+      "properties": {
+        "source_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "raw_locator": {
+          "type": "string",
+          "minLength": 1
+        },
+        "review_status": {
+          "enum": [
+            "accepted",
+            "review",
+            "excluded"
+          ]
+        },
+        "price_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "product_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "amount_min": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "amount_max": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "currency": {
+          "type": "string",
+          "minLength": 1
+        },
+        "unit": {
+          "enum": [
+            "bottle",
+            "box",
+            "case",
+            "other",
+            "unknown"
+          ]
+        },
+        "price_type": {
+          "enum": [
+            "retail_observed",
+            "suggested_retail",
+            "wholesale",
+            "factory",
+            "promotion_conditional",
+            "reference",
+            "unknown"
+          ]
+        },
+        "current_retail_eligible": {
+          "const": false
+        },
+        "strict_price_filter_eligible": {
+          "const": false
+        }
+      },
+      "additionalProperties": true
+    },
+    "entities": {
+      "type": "object",
+      "required": [
+        "entity_id",
+        "entity_type",
+        "name",
+        "source_ids",
+        "raw_locator",
+        "review_status"
+      ],
+      "properties": {
+        "source_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "raw_locator": {
+          "type": "string",
+          "minLength": 1
+        },
+        "review_status": {
+          "enum": [
+            "accepted",
+            "review",
+            "excluded"
+          ]
+        },
+        "entity_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "entity_type": {
+          "enum": [
+            "Region",
+            "GrapeVariety",
+            "Flavor",
+            "Concept"
+          ]
+        }
+      },
+      "additionalProperties": true
+    },
+    "aliases": {
+      "type": "object",
+      "required": [
+        "alias_id",
+        "alias",
+        "entity_id",
+        "entity_type",
+        "alias_kind",
+        "source_ids",
+        "raw_locator",
+        "review_status"
+      ],
+      "properties": {
+        "source_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "raw_locator": {
+          "type": "string",
+          "minLength": 1
+        },
+        "review_status": {
+          "enum": [
+            "accepted",
+            "review",
+            "excluded"
+          ]
+        },
+        "alias_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "alias": {
+          "type": "string",
+          "minLength": 1
+        },
+        "entity_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "entity_type": {
+          "enum": [
+            "Winery",
+            "Product",
+            "Region",
+            "GrapeVariety",
+            "Flavor",
+            "Concept"
+          ]
+        },
+        "alias_kind": {
+          "enum": [
+            "canonical",
+            "abbreviation",
+            "english_name",
+            "corporate_name",
+            "other"
+          ]
+        },
+        "ambiguous": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": true
+    },
+    "knowledge": {
+      "type": "object",
+      "required": [
+        "knowledge_id",
+        "title",
+        "text",
+        "category",
+        "entity_ids",
+        "text_type",
+        "fact_scope",
+        "source_ids",
+        "raw_locator",
+        "review_status"
+      ],
+      "properties": {
+        "source_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "raw_locator": {
+          "type": "string",
+          "minLength": 1
+        },
+        "review_status": {
+          "enum": [
+            "accepted",
+            "review",
+            "excluded"
+          ]
+        },
+        "knowledge_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1
+        },
+        "category": {
+          "enum": [
+            "winery_intro",
+            "product_intro",
+            "region",
+            "grape",
+            "wine_basics",
+            "tasting",
+            "storage",
+            "serving",
+            "pairing"
+          ]
+        },
+        "entity_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "text_type": {
+          "enum": [
+            "excerpt",
+            "faithful_summary",
+            "subjective_opinion"
+          ]
+        },
+        "fact_scope": {
+          "type": "string",
+          "minLength": 1
+        },
+        "contains_price": {
+          "const": false
+        },
+        "retrieval_allowed": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": true
+    },
+    "relations": {
+      "type": "object",
+      "required": [
+        "relation_id",
+        "head_id",
+        "relation_type",
+        "tail_id",
+        "source_ids",
+        "raw_locator",
+        "review_status"
+      ],
+      "properties": {
+        "source_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "raw_locator": {
+          "type": "string",
+          "minLength": 1
+        },
+        "review_status": {
+          "enum": [
+            "accepted",
+            "review",
+            "excluded"
+          ]
+        },
+        "relation_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "head_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "tail_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "relation_type": {
+          "enum": [
+            "PRODUCES",
+            "LOCATED_IN",
+            "ORIGINATES_FROM",
+            "MADE_FROM",
+            "HAS_FLAVOR",
+            "PART_OF",
+            "HAS_CHUNK",
+            "ABOUT"
+          ]
+        },
+        "proportion_pct": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 100
+        }
+      },
+      "additionalProperties": true
+    },
+    "professional_reviews": {
+      "type": "object",
+      "required": [
+        "review_id",
+        "product_id",
+        "review_type",
+        "fact_scope",
+        "source_ids",
+        "raw_locator",
+        "review_status"
+      ],
+      "properties": {
+        "source_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "raw_locator": {
+          "type": "string",
+          "minLength": 1
+        },
+        "review_status": {
+          "enum": [
+            "accepted",
+            "review",
+            "excluded"
+          ]
+        },
+        "review_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "product_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "review_type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "score": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "score_scale": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "summary": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "x-datasets": {
+    "sources.jsonl": {
+      "$ref": "#/$defs/sources"
+    },
+    "wineries.jsonl": {
+      "$ref": "#/$defs/wineries"
+    },
+    "products.jsonl": {
+      "$ref": "#/$defs/products"
+    },
+    "price_observations.jsonl": {
+      "$ref": "#/$defs/price_observations"
+    },
+    "entities.jsonl": {
+      "$ref": "#/$defs/entities"
+    },
+    "aliases.jsonl": {
+      "$ref": "#/$defs/aliases"
+    },
+    "knowledge.jsonl": {
+      "$ref": "#/$defs/knowledge"
+    },
+    "relations.jsonl": {
+      "$ref": "#/$defs/relations"
+    },
+    "professional_reviews.jsonl": {
+      "$ref": "#/$defs/professional_reviews"
+    }
+  }
+}

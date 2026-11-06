@@ -1,0 +1,264 @@
+{
+  "rules_version": "1.0.0",
+  "as_of_date": "2026-11-06",
+  "counts": {
+    "sources": {
+      "accepted": 49,
+      "review": 0,
+      "excluded": 0,
+      "total": 49
+    },
+    "wineries": {
+      "accepted": 22,
+      "review": 3,
+      "excluded": 0,
+      "total": 25
+    },
+    "products": {
+      "accepted": 47,
+      "review": 40,
+      "excluded": 0,
+      "total": 87
+    },
+    "price_observations": {
+      "accepted": 10,
+      "review": 23,
+      "excluded": 0,
+      "total": 33
+    },
+    "professional_reviews": {
+      "accepted": 30,
+      "review": 4,
+      "excluded": 0,
+      "total": 34
+    },
+    "knowledge": {
+      "accepted": 138,
+      "review": 47,
+      "excluded": 0,
+      "total": 185
+    },
+    "entities": {
+      "accepted": 101,
+      "review": 11,
+      "excluded": 0,
+      "total": 112
+    },
+    "aliases": {
+      "accepted": 191,
+      "review": 57,
+      "excluded": 0,
+      "total": 248
+    },
+    "relations": {
+      "accepted": 538,
+      "review": 203,
+      "excluded": 0,
+      "total": 741
+    },
+    "visitor_reviews": {
+      "input_rows": 9725,
+      "after_confirmed_dedup": 3137,
+      "confirmed_duplicate_rows": 6588,
+      "auxiliary_review": 3135,
+      "excluded": 2
+    }
+  },
+  "product_fields": {
+    "vintage": {
+      "all_non_null": 42,
+      "accepted_non_null": 30,
+      "accepted_filter_usable": 29
+    },
+    "volume_ml": {
+      "all_non_null": 30,
+      "accepted_non_null": 16,
+      "accepted_filter_usable": 16
+    },
+    "color": {
+      "all_non_null": 78,
+      "accepted_non_null": 42,
+      "accepted_filter_usable": 41
+    },
+    "sweetness": {
+      "all_non_null": 64,
+      "accepted_non_null": 36,
+      "accepted_filter_usable": 31
+    },
+    "alcohol_pct_vol": {
+      "all_non_null": 41,
+      "accepted_non_null": 31,
+      "accepted_filter_usable": 29
+    },
+    "region_id": {
+      "all_non_null": 13,
+      "accepted_non_null": 13,
+      "accepted_filter_usable": 13
+    },
+    "grape_varieties": {
+      "all_non_null": 34,
+      "accepted_non_null": 34,
+      "accepted_filter_usable": 34
+    },
+    "is_sparkling": {
+      "all_non_null": 6,
+      "accepted_non_null": 6,
+      "accepted_filter_usable": 4
+    }
+  },
+  "raw_structured_counts": {
+    "wineries": 25,
+    "products": 87,
+    "sources": 49,
+    "price_observations": 33,
+    "reviews": 34,
+    "quality_issues": 21,
+    "aliases": 49,
+    "product_grapes": 64,
+    "knowledge": 80,
+    "rag_documents": 234
+  },
+  "source_evidence": {
+    "collector_summary": 38,
+    "unknown": 3,
+    "search_snippet": 8
+  },
+  "price_distribution": {
+    "currency": {
+      "CNY": 32,
+      "HKD": 1
+    },
+    "price_type": {
+      "reference": 26,
+      "factory": 1,
+      "suggested_retail": 6
+    },
+    "quote_date_precision": {
+      "unknown": 11,
+      "day": 16,
+      "month": 6
+    },
+    "unit": {
+      "bottle": 33
+    }
+  },
+  "current_retail_eligible_count": 0,
+  "strict_price_filter_eligible_count": 0,
+  "filter_eligibility_downgraded_ids": [
+    "P015",
+    "P016",
+    "P017",
+    "P018",
+    "P019",
+    "P020",
+    "P021",
+    "P022",
+    "P023",
+    "P024",
+    "P025",
+    "P026",
+    "P027",
+    "P028",
+    "P029",
+    "P030",
+    "P043",
+    "P076"
+  ],
+  "knowledge_categories": {
+    "winery_intro": 33,
+    "product_intro": 48,
+    "serving": 9,
+    "wine_basics": 7,
+    "storage": 10,
+    "tasting": 30,
+    "pairing": 1
+  },
+  "knowledge_origins": {
+    "collector_summary": 43,
+    "regenerated_from_clean_records": 68,
+    "professional_review_summary": 27
+  },
+  "supported_filter_examples": {
+    "dry_red_750ml_product_ids": [
+      "P001",
+      "P005",
+      "P009",
+      "P010",
+      "P011",
+      "P012",
+      "P013",
+      "P062",
+      "P066"
+    ],
+    "current_price_budget_filter": "unavailable_no_qualified_current_prices"
+  },
+  "quality_issue_counts": {
+    "inherited_issue": 21,
+    "wrong_scope": 1,
+    "low_evidence": 27,
+    "missing": 335,
+    "catalog_candidate": 24,
+    "conflict": 2,
+    "reference_price_only": 33
+  },
+  "input_mirror_checks": [
+    {
+      "dataset": "wineries",
+      "json_records": 25,
+      "csv_records": 25,
+      "content_equal": true
+    },
+    {
+      "dataset": "products",
+      "json_records": 87,
+      "csv_records": 87,
+      "content_equal": true
+    },
+    {
+      "dataset": "sources",
+      "json_records": 49,
+      "csv_records": 49,
+      "content_equal": true
+    },
+    {
+      "dataset": "price_observations",
+      "json_records": 33,
+      "csv_records": 33,
+      "content_equal": true
+    },
+    {
+      "dataset": "reviews",
+      "json_records": 34,
+      "csv_records": 34,
+      "content_equal": true
+    },
+    {
+      "dataset": "quality_issues",
+      "json_records": 21,
+      "csv_records": 21,
+      "content_equal": true
+    },
+    {
+      "dataset": "aliases",
+      "json_records": 49,
+      "csv_records": 49,
+      "content_equal": true
+    },
+    {
+      "dataset": "product_grapes",
+      "json_records": 64,
+      "csv_records": 64,
+      "content_equal": true
+    }
+  ],
+  "raw_files_unchanged": true,
+  "limitations": [
+    "只执行本地清洗，没有重新访问网站、核验当前报价或真实购买身份。",
+    "accepted表示本地结构和证据一致性通过；来源多为采集摘要，不是独立真实性认证。",
+    "没有合格当前零售价，不支持当前零售价预算筛选；参考报价单独展示。",
+    "未指定年份页面不外推具体年份；混合来源缺少字段精确归因时保守停用对应筛选。",
+    "旅游/平台评论全部为辅助待审资料，不进入正式RAG和产品风味图。",
+    "未生成embedding；正式文本与结构验收后再统一向量化。",
+    "现有通用知识以保存、侍酒和品鉴为主；颜色/甜度基础与品种百科仍需补充。"
+  ]
+}

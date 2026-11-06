@@ -1,0 +1,49 @@
+{
+  "rules_version": "1.0.0",
+  "expected_names": {
+    "W009": "亿众酒庄",
+    "P003": "玉鸽宋彩干白葡萄酒",
+    "P034": "芬享·花开怡香半甜桃红",
+    "P043": "Bloom Brut"
+  },
+  "catalog_source_ids": ["S001", "S022", "S023", "S026"],
+  "field_overrides": {
+    "W009": {
+      "founded_year": {
+        "value": null,
+        "reason": "原始说明明确2018为公司成立年，不能作为酒庄成立年；另存company_founded_year。"
+      }
+    },
+    "P003": {
+      "grape_varieties": {
+        "value": [],
+        "reason": "正文与图片标签品种冲突，保留候选审计，停用品种关系和品种硬筛选。"
+      }
+    },
+    "P034": {
+      "sweetness": {
+        "value": null,
+        "reason": "标题半甜与原字段甜存在冲突，不能按标题覆盖冲突。"
+      }
+    },
+    "P043": {
+      "strict_product_filter_eligible": {
+        "value": false,
+        "reason": "2019 Bloom披露含米酒，仅保留特定配方介绍，不进入普通纯葡萄酒筛选。"
+      }
+    }
+  },
+  "flavor_terms": [
+    "红色浆果", "泥土", "梨", "柑橘", "泡沫细腻", "清爽", "酸度鲜明",
+    "坚果", "奶油", "深色莓果", "质地柔顺", "红果", "菌菇", "单宁柔细",
+    "浆果", "薄荷", "结构有力", "黑加仑", "李子", "结构鲜明", "蜜瓜",
+    "香草", "黄油", "黑莓", "雪松", "香料", "蓝莓", "紫罗兰", "结构饱满",
+    "黑樱桃", "烘烤", "苹果", "柠檬皮", "饼干", "花香", "单宁细腻",
+    "热带水果", "桑葚", "口感饱满", "樱桃", "草莓", "西瓜", "白桃",
+    "香梨", "青苹果", "深色果香", "胡椒", "酒体强劲", "黑醋栗", "烟熏",
+    "单宁成熟", "青椒", "红黑果香", "口感柔滑", "咖啡", "甘草",
+    "风格活泼", "收尾明快", "草本", "单宁结构鲜明"
+  ],
+  "visitor_review_policy": "auxiliary_only_no_product_facts",
+  "current_price_policy": "no_online_revalidation_no_current_price_eligibility"
+}

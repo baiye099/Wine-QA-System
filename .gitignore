@@ -1,0 +1,22 @@
+.env
+.env.*
+!.env.example
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.idea/
+.vscode/
+.streamlit/secrets.toml
+*.log
+*.dump
+
+# 原始采集、游客评论、待审材料及本地过程文件不公开。
+/data_raw/
+/work/
+/data/auxiliary/
+/data/review/
+/data/excluded/
+/data/audit/
+

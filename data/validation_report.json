@@ -1,0 +1,22 @@
+{
+  "passed": true,
+  "checks_total": 23829,
+  "checks_by_category": {
+    "files": 27,
+    "status": 1514,
+    "schema": 1514,
+    "uniqueness": 606,
+    "report": 29,
+    "provenance": 4105,
+    "foreign_keys": 7201,
+    "business": 5559,
+    "privacy": 3137,
+    "raw_integrity": 90,
+    "output_integrity": 41,
+    "regression": 6
+  },
+  "errors": [],
+  "error_count": 0,
+  "raw_file_count": 90,
+  "note": "本地结构、业务与文件完整性验证；没有重新核验外部网页事实。"
+}

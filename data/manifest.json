@@ -1,0 +1,763 @@
+{
+  "schema_version": "1.0.0",
+  "rules_version": "1.0.0",
+  "as_of_date": "2026-11-06",
+  "raw_root": "E:\\PythonProject\\NLP\\QASystem\\data_raw",
+  "output_root": "E:\\PythonProject\\NLP\\QASystem\\data",
+  "raw_files_unchanged": true,
+  "input_files": [
+    {
+      "path": "data_raw/宁夏数据集-王丰/captured_reviews.csv",
+      "size_bytes": 1420,
+      "sha256": "6554964c6a6f44496e2705da5b7520e923ebd700e72b49066d9b7e40ae480b4a",
+      "handling": "read_canonical_or_crosscheck"
+    },
+    {
+      "path": "data_raw/宁夏数据集-王丰/captured_reviews_compat.csv",
+      "size_bytes": 1243,
+      "sha256": "65f9899c0489be67ff6b89cbeb3647f79d4a8aee89e133734e79c6afcdc026a9",
+      "handling": "read_canonical_or_crosscheck"
+    },
+    {
+      "path": "data_raw/宁夏数据集-王丰/ctrip/利思酒庄.csv",
+      "size_bytes": 28399,
+      "sha256": "6f81d787944f5aab59cb5f7aed1133984ebc7081a47260798095bfd08baf9a4b",
+      "handling": "read_canonical_or_crosscheck"
+    },
+    {
+      "path": "data_raw/宁夏数据集-王丰/ctrip/利思酒庄.jsonl",
+      "size_bytes": 212682,
+      "sha256": "9cfd96448fc9575638d3a2fa6496202d1e216735e1d9e17cea1ea0646ee362d5",
+      "handling": "read_canonical_or_crosscheck"
+    },
+    {
+      "path": "data_raw/宁夏数据集-王丰/ctrip/源石酒庄.csv",
+      "size_bytes": 55913,
+      "sha256": "4c8aec8cb34d0b7c44351e34cd3c74ec543f04bf48f85662a38d583cd0f49956",
+      "handling": "read_canonical_or_crosscheck"
+    },
+    {
+      "path": "data_raw/宁夏数据集-王丰/ctrip/源石酒庄.jsonl",
+      "size_bytes": 687538,
+      "sha256": "523e9157b82f9f158d52dbe5428d7914b60bb23f72e9af7e09b01d591f3df222",
+      "handling": "read_canonical_or_crosscheck"
+    },
+    {
+      "path": "data_raw/宁夏数据集-王丰/ctrip/龙谕酒庄.csv",
+      "size_bytes": 173602,
+      "sha256": "42f73101c1a48366acc1bc1acaa9f6dccffa61305adde0f0f5f4436fbc47f7d0",
+      "handling": "read_canonical_or_crosscheck"
+    },
+    {
+      "path": "data_raw/宁夏数据集-王丰/ctrip/龙谕酒庄.jsonl",
+      "size_bytes": 2358652,
+      "sha256": "9111f37bb88000749c913fe8a2cea882794fdf43902a06c2637d39fde593c6a0",
+      "handling": "read_canonical_or_crosscheck"
+    },
+    {
+      "path": "data_raw/宁夏数据集-王丰/dianping_compat.csv",
+      "size_bytes": 367596,
+      "sha256": "10092c586f229c92c1554cee7a07ebc911752be3593148a9598ae96fcf97dfdc",
+      "handling": "read_canonical_or_crosscheck"
+    },
+    {
+      "path": "data_raw/宁夏数据集-王丰/dianping_reviews.csv",
+      "size_bytes": 518772,
+      "sha256": "782b9f16e2b2b9b6eb9220cea6c65b8f6a045086c3e6d4731156ef5c01c3a88e",
+      "handling": "read_canonical_or_crosscheck"
+    },
+    {
+      "path": "data_raw/宁夏数据集-王丰/reviews_all.csv",
+      "size_bytes": 843727,
+      "sha256": "a31a629e60bed581e731abe32e1ddea83664d75611e505455b09124bbffffd1d",
+      "handling": "read_canonical_or_crosscheck"
+    },
+    {
+      "path": "data_raw/宁夏数据集-王丰/reviews_all_before_ctrip.csv",
+      "size_bytes": 628360,
+      "sha256": "4e37bf139f0ac46fe5caa517d79580caf5952bcef198f2f4dd4ae604891530f8",
+      "handling": "read_canonical_or_crosscheck"
+    },
+    {
+      "path": "data_raw/宁夏数据集-王丰/yinchuan_winery_reviews_sentiment.csv",
+      "size_bytes": 17663,
+      "sha256": "84bd5bf6b4262e14fd3de13f66a87de7997ecf27701564ae285a46f88d472fef",
+      "handling": "read_canonical_or_crosscheck"
+    },
+    {
+      "path": "data_raw/宁夏数据集-王丰/龙谕酒庄_评论.csv",
+      "size_bytes": 88075,
+      "sha256": "e3f17a5e57e567af0509debc14a03eda1c54f0bde746f6c723f68461a51f19cf",
+      "handling": "read_canonical_or_crosscheck"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/aliases.csv",
+      "size_bytes": 2146,
+      "sha256": "b76750a361b435337791ff3c7ec47f30db0eeba535291e99ac89bc4bbf706211",
+      "handling": "read_canonical_or_crosscheck"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/aliases.json",
+      "size_bytes": 6566,
+      "sha256": "ea880f96544cf05a86369e944c0364fd08c796f7d13bf430a8ca4f6ac04297f9",
+      "handling": "read_canonical_or_crosscheck"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/dataset_summary.json",
+      "size_bytes": 281,
+      "sha256": "e04f3648c04b7ee8477d8b9ba226ffac84e73d24faf338282a919ddd4b594bfc",
+      "handling": "alternate_export_or_context_not_reimported"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/knowledge.jsonl",
+      "size_bytes": 43146,
+      "sha256": "daade52b9aa781e7873e460d288c38664c3efa5d2b606ea213089107dbf6c6f1",
+      "handling": "read_canonical_or_crosscheck"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/ningxia_wine.sqlite",
+      "size_bytes": 159744,
+      "sha256": "da43efd61d9619cd8d660041f33ffccf13870b37899d19d976dfb601fa619fb3",
+      "handling": "read_canonical_or_crosscheck"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/price_observations.csv",
+      "size_bytes": 7110,
+      "sha256": "0ed193f536081f4739c2a506f4e2dc7dd380a4939d0b003c3b48c5bac6d8da21",
+      "handling": "read_canonical_or_crosscheck"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/price_observations.json",
+      "size_bytes": 19554,
+      "sha256": "2b9d4168436d9157b1a5e56fc09af99f15a15a031a5b3d45c3748739e1e3d80a",
+      "handling": "read_canonical_or_crosscheck"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/product_grapes.csv",
+      "size_bytes": 5157,
+      "sha256": "8c03bd24b9824999127b3cf826af07341b1c946a86717559bea8b7c93723ef93",
+      "handling": "read_canonical_or_crosscheck"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/product_grapes.json",
+      "size_bytes": 14062,
+      "sha256": "bb21dae3152addd7b4b555c7fc4f9f69226d1a90261d077620607785b7b49a6b",
+      "handling": "read_canonical_or_crosscheck"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/products.csv",
+      "size_bytes": 26561,
+      "sha256": "f4cceabe7d2d4f9a38bb31e2f0b9aca74050448699b8d2834fed87e341daad19",
+      "handling": "read_canonical_or_crosscheck"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/products.json",
+      "size_bytes": 68921,
+      "sha256": "b372149839531a682c143f4894fdfe1c243f8ab850828ba1292dfe8d72cb8b02",
+      "handling": "read_canonical_or_crosscheck"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/quality_issues.csv",
+      "size_bytes": 4137,
+      "sha256": "273a410e90d1bac8eaa1226c717dbb3a625d83218785078c4b084f4ddda89883",
+      "handling": "read_canonical_or_crosscheck"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/quality_issues.json",
+      "size_bytes": 7510,
+      "sha256": "b1bd7cc2fc73e99872dab70be0c716f92aac71ac77bc765c177585971a6f53ce",
+      "handling": "read_canonical_or_crosscheck"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/rag_documents.jsonl",
+      "size_bytes": 274070,
+      "sha256": "a7086d2900072cd4e99fdbea15685f7a48ec7ab5a9e79025c7b790d518d18e23",
+      "handling": "read_canonical_or_crosscheck"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/reviews.csv",
+      "size_bytes": 4796,
+      "sha256": "b95938fc8251154326275e9224a8f629977e25ce50722d7947fac37bb4278d6a",
+      "handling": "read_canonical_or_crosscheck"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/reviews.json",
+      "size_bytes": 16021,
+      "sha256": "360ce0993bbb755a919be8dd654d71f044b343a01bace25a9fe719477be5fb01",
+      "handling": "read_canonical_or_crosscheck"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/SHA256.txt",
+      "size_bytes": 6813,
+      "sha256": "099093783eb41cb49725f72488e178ebfac4beee770969d192341a8eb4bf2fb8",
+      "handling": "alternate_export_or_context_not_reimported"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/sources.csv",
+      "size_bytes": 11850,
+      "sha256": "0b4443d78e939a7525f54448ead172271eaa47c571a7f522d7c77004ef7e3e5c",
+      "handling": "read_canonical_or_crosscheck"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/sources.json",
+      "size_bytes": 21811,
+      "sha256": "7e634a908bc962069e1876e5bad5dd0b96284f38a7d917146df0788962600877",
+      "handling": "read_canonical_or_crosscheck"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/wineries.csv",
+      "size_bytes": 4503,
+      "sha256": "942418035c49fdf59afb04cae87cc92348abb082c6873ffb03cdfcfa4db9f1a1",
+      "handling": "read_canonical_or_crosscheck"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/wineries.json",
+      "size_bytes": 10900,
+      "sha256": "245ff4fe38e5a49502012f6f0a94a283eb442d97f89ad5786ba23fbd978a9378",
+      "handling": "read_canonical_or_crosscheck"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/使用说明.txt",
+      "size_bytes": 3071,
+      "sha256": "99d3b20fa3283ddcea653c7973117ab6597620a1b7ad5b4096debc737aa58fa5",
+      "handling": "alternate_export_or_context_not_reimported"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/宁夏葡萄酒数据采集表.xlsx",
+      "size_bytes": 59343,
+      "sha256": "2e14c6942307eee3f1e4ada8bd4872e6e5601adbd6d214c87c3506ab1c1d389e",
+      "handling": "alternate_export_or_context_not_reimported"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/宁夏葡萄酒数据采集表.xlsx.inspect.ndjson",
+      "size_bytes": 1212313,
+      "sha256": "6fe915cd29104284abfcf55e093409f76a9b781c47c5dc32c212d57c1727adcc",
+      "handling": "alternate_export_or_context_not_reimported"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/数据字典.txt",
+      "size_bytes": 1854,
+      "sha256": "c2dbddee8453e7428e3788574332ab348ef184f436b7e24bd33460f20bac76f2",
+      "handling": "alternate_export_or_context_not_reimported"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S001.json",
+      "size_bytes": 536,
+      "sha256": "beb479e3269f2977841b4707f8edbf1c211a2c6e5f7a744e2809af44ab9132eb",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S002.json",
+      "size_bytes": 522,
+      "sha256": "bf83b4dd6eaa903ef1ba1eac7c82f3bfb3a2396bd64692bc89fde2f9354c54b8",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S003.json",
+      "size_bytes": 583,
+      "sha256": "6af1b97e7055d50d008597aa18c07a038946083477867b60c38f5765fc83baf0",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S004.json",
+      "size_bytes": 580,
+      "sha256": "8a259de5305c68e27438ca9d862863717172843851734fe409a08e664eca5dd3",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S005.json",
+      "size_bytes": 591,
+      "sha256": "d569e99761321d2de0e3e12eba1a1ae985805ad0187e1f4f79c6ec3c8e354089",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S006.json",
+      "size_bytes": 591,
+      "sha256": "895a81b7982fa4ec38f7347da54d00431eef6f6c1f11ce3f5a7a50c251751432",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S007.json",
+      "size_bytes": 591,
+      "sha256": "f68178838bd923d6e43615c849732c13929c36bc5e0cbb897c1ec30ac36787ee",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S008.json",
+      "size_bytes": 588,
+      "sha256": "46d6910e19c5912acca7a380e2e78e8e14269e49cc9a7c6500de0e3b3664665f",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S009.json",
+      "size_bytes": 588,
+      "sha256": "b7d3a28103817d6aebd3d6ecf22c580ceca165e4b45c4b0c8916b062a2dde307",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S010.json",
+      "size_bytes": 588,
+      "sha256": "4db8b7f312f122a774a59a4b459412e548ec6092f32725ff6baf4815d75b14ee",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S011.json",
+      "size_bytes": 604,
+      "sha256": "87b552e68551e970f19d04be4745bc18bea6a6ce183665a957d57672ab7b322b",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S012.json",
+      "size_bytes": 589,
+      "sha256": "ca484ff28070f60ae5bbc01f1b91961fe65e1492d52b74e448958e7ca2cc9c8d",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S013.json",
+      "size_bytes": 590,
+      "sha256": "7825c4ff1744e4e426196a30a636dcd64c3dc6e4a07efdd21558ac185d78e13d",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S014.json",
+      "size_bytes": 582,
+      "sha256": "8917d79e5e7d634ac2e49d0e4d16b982c0c2309eb447917f68e7d156160411a1",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S015.json",
+      "size_bytes": 582,
+      "sha256": "bc815e139f20ad5a6523eed3780d9f2685ee48f61fa8f259a6a240003647ce93",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S016.json",
+      "size_bytes": 518,
+      "sha256": "2cd209c19587ec639b0b8bee9bd820736aaf413b5f64d822c5d5ce930613959a",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S017.json",
+      "size_bytes": 522,
+      "sha256": "db856cb25a2b5c75edde128c085886f6741f3403015202afd940a3c760b9cc55",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S018.json",
+      "size_bytes": 528,
+      "sha256": "c3664a71670adfe953398472c0aa12c654fe630c0b4079fbc045e435d3c98495",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S019.json",
+      "size_bytes": 541,
+      "sha256": "afe8795a1064dcbaf8c6c41c077e82aa98d86a00cb07faffee4aa343586ade48",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S020.json",
+      "size_bytes": 537,
+      "sha256": "af1115fcbacb511f61e9abe02b39704324ddb7d95d8e41c91dcbeff38754d0a6",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S021.json",
+      "size_bytes": 615,
+      "sha256": "cfb1d3aefcc57df5a83a6120143d3c6526964dc8dbea4a3dbcd5889d92d33ffe",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S022.json",
+      "size_bytes": 733,
+      "sha256": "c85f9f7149711aff29abdbaf332d34ea210e77f9a434d7b8b5b2fefbd3adbf4c",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S023.json",
+      "size_bytes": 644,
+      "sha256": "705c60614f8c0606a6127ddbf4c8efbdbb433414f9b9dfa1c9886fe95f8f3bf2",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S024.json",
+      "size_bytes": 602,
+      "sha256": "b1369477475f11a76b13d5f0e21b936af3f70f06beb106d6b490c689e3001364",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S025.json",
+      "size_bytes": 563,
+      "sha256": "5edf81af8889b4c534145cf35fd9551d324dc8c5f397a3ec1f0f17fc68dce61a",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S026.json",
+      "size_bytes": 585,
+      "sha256": "36f14376c61ac7afac962937019d8aef707e7df5256740af10d0ca3f4e78d27d",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S027.json",
+      "size_bytes": 703,
+      "sha256": "4a78b7df3783d89ba2bd8ba3d1b60e76a3ce4b298cd5e9e6e05013656c72ad89",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S028.json",
+      "size_bytes": 767,
+      "sha256": "c1e9dddc91dbd9de6b4f27b6aab2033a56a1d7b7adb15b9948bcdb2fdab51be0",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S029.json",
+      "size_bytes": 870,
+      "sha256": "a9803d0c112f74204d40d6145c4180d4599bc3c2c5eb5abca7d4fbf95a0fb3ef",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S030.json",
+      "size_bytes": 813,
+      "sha256": "00ed111ca22b87e5fd306bffa15e55eaac41a0f745d80d52ce0012959f3bf6e1",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S031.json",
+      "size_bytes": 624,
+      "sha256": "7a5bfc1bd32902ccd91f71ece74abcd5caf5c6b526bf0fc8f400cb391f0cbdd4",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S032.json",
+      "size_bytes": 595,
+      "sha256": "c5943a34925bcddac6b8459a21d6fdeba73218d4cb7e553caf051d046ec97a30",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S033.json",
+      "size_bytes": 530,
+      "sha256": "00d3cca0c431ec9ed98f323f49f1026bf7eabf829eccd1becc72a05bc6fd5b9f",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S034.json",
+      "size_bytes": 893,
+      "sha256": "b77ae4dfb37823fe410a3940b0cf8dbd32698801b689ad7d4447d13be7a249df",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S035.json",
+      "size_bytes": 740,
+      "sha256": "a0b51d74661bea8a73fce33fc82f001c648b686f89a73249054193bedfcf2bb6",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S036.json",
+      "size_bytes": 626,
+      "sha256": "95cbe58671fb3fb7f948d3d4482fa048d3dfc28f456206b799725e1a85dc0549",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S037.json",
+      "size_bytes": 606,
+      "sha256": "6d81cedaa7f5dad77343681a02ee4e27c2283cb05e2f97d624938ef0cdd9fb28",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S038.json",
+      "size_bytes": 664,
+      "sha256": "af9a1c641e24c3db3bf0f511a1e95978f5bdc009916973404b08f664db8aa7a1",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S039.json",
+      "size_bytes": 631,
+      "sha256": "1db49c857fa361c6d9e0b322fad836f4aabe09b8e72557225dbdc85f90b09399",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S040.json",
+      "size_bytes": 628,
+      "sha256": "e1db635b2e56603f3fd9a521416ba931068dda331b65ae6b695771a6436e8cf0",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S041.json",
+      "size_bytes": 667,
+      "sha256": "c527224901ecd68a32c6dc96e596c08545e07d1df0f4dadd01878976ec8a8d42",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S042.json",
+      "size_bytes": 667,
+      "sha256": "4274f4b3a188b2855fd86d2e4f99f3ffae5ebaad620f57974773e4ffeb34e437",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S043.json",
+      "size_bytes": 648,
+      "sha256": "234073531caeb19d6cd85f8d9548d4f640d20fa9fb94af396ce71198b125ac56",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S044.json",
+      "size_bytes": 686,
+      "sha256": "a78850c70abda24eceb36f19d7d7b1dbed4e892fcc76f7bdc536fe54d68db6b3",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S045.json",
+      "size_bytes": 602,
+      "sha256": "e1e44175fef84025f6389cf35a0cec3801f7e850c0f4813a2cb06ae7c360b0ff",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S046.json",
+      "size_bytes": 567,
+      "sha256": "aa2faa5b8f417bc3e6f1cf7c69d679c99d1eb5c5c0314824461f42fa13ac4f0f",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S047.json",
+      "size_bytes": 590,
+      "sha256": "703bc749e4bebfead852e7ac1d03380cd322443584d41e30726b4e1b2e6064e7",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S048.json",
+      "size_bytes": 610,
+      "sha256": "76ef340bc9c5bc7370c08b7b16efcb6115b717f044448bf831c506700fa03263",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/来源事实核对/S049.json",
+      "size_bytes": 593,
+      "sha256": "14b7c6120ee12c26af34d90d72781efe96b0723b6bc6f63708b664720441aae6",
+      "handling": "collector_fact_register_not_original_snapshot"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/查询示例.sql",
+      "size_bytes": 860,
+      "sha256": "2bbc6cb030e6f6ec30ab1ec21eecd1ea63a1d0f181b7197e0f6e175b14d38f7c",
+      "handling": "alternate_export_or_context_not_reimported"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/核验说明.json",
+      "size_bytes": 1242,
+      "sha256": "cc2a6d04abbd13c079c2ed7d3008fe14da39aba1c431657b14c0969e4f68f176",
+      "handling": "alternate_export_or_context_not_reimported"
+    }
+  ],
+  "output_files": [
+    {
+      "path": "aliases.jsonl",
+      "size_bytes": 74712,
+      "sha256": "9e255d95b6688c51ca5262c97eeb4fa256832b74d37cd6a0ad50762b5ddb4b58"
+    },
+    {
+      "path": "audit/derived_records.jsonl",
+      "size_bytes": 45288,
+      "sha256": "148b583e16e2b1c0ad2c31a12228acc73f5585de76883055be9e5a918c5690ab"
+    },
+    {
+      "path": "audit/duplicate_candidates.jsonl",
+      "size_bytes": 100903,
+      "sha256": "514af01969542bd36fc814f8d999e9afc8b32b39b338638e4999f167a9bdf97e"
+    },
+    {
+      "path": "audit/duplicates.jsonl",
+      "size_bytes": 1860891,
+      "sha256": "a232fb76392d0b78a3910bbd86f96868ab2dce278709d2360d115555b71be8ad"
+    },
+    {
+      "path": "audit/field_evidence.jsonl",
+      "size_bytes": 297899,
+      "sha256": "ddb2c47faf62d36c6b7066edc732e048d48be80170f24bee019342d42fd3fbc4"
+    },
+    {
+      "path": "audit/id_mapping.jsonl",
+      "size_bytes": 57438,
+      "sha256": "73f361cd88fefae5a2981f4315d873dacc3f5517d0a214f930333912f0a20f1b"
+    },
+    {
+      "path": "audit/input_checks.jsonl",
+      "size_bytes": 1155,
+      "sha256": "0e6db72e5a771155c6e34feed1172abae607dcd5ed300f49bee72526f0d71173"
+    },
+    {
+      "path": "audit/quality_issues.jsonl",
+      "size_bytes": 128113,
+      "sha256": "8e2defc47c248c8f3a8dd2d32cbe60977048f0ab1e32a04da2ee47955ce8f284"
+    },
+    {
+      "path": "audit/review_decisions.jsonl",
+      "size_bytes": 496320,
+      "sha256": "9b817183a435541968d472168e5a6a845931ca45078e6a23d6ea7d843708b811"
+    },
+    {
+      "path": "auxiliary/review_sources.jsonl",
+      "size_bytes": 15798,
+      "sha256": "f85d52ba2e5a326c63dd50699e39b77d3d305ae8e4fb708c0359f0632d9963fb"
+    },
+    {
+      "path": "auxiliary/visitor_reviews.jsonl",
+      "size_bytes": 5758842,
+      "sha256": "6a41cae61bf49e83335825b6e589e6fddbf23dc7ff7e87509d19d03acef287c2"
+    },
+    {
+      "path": "entities.jsonl",
+      "size_bytes": 52776,
+      "sha256": "3c9cf1db4ac91e1596e6978af5eaf0b0ccd82184e80d3d218681e28fde3b3b4b"
+    },
+    {
+      "path": "excluded/aliases.jsonl",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "excluded/entities.jsonl",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "excluded/knowledge.jsonl",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "excluded/price_observations.jsonl",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "excluded/products.jsonl",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "excluded/professional_reviews.jsonl",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "excluded/relations.jsonl",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "excluded/sources.jsonl",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "excluded/visitor_reviews.jsonl",
+      "size_bytes": 3597,
+      "sha256": "e49464b2662651f4b1079b996c7dfdd6b18c1a9c18d2ac52df7856fea45fb521"
+    },
+    {
+      "path": "excluded/wineries.jsonl",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "knowledge.jsonl",
+      "size_bytes": 110405,
+      "sha256": "6fc18e7510aa421e0e540fec1db4b37ea5c450acf1a9613d8f8c40ac22aff5d7"
+    },
+    {
+      "path": "price_observations.jsonl",
+      "size_bytes": 10228,
+      "sha256": "1cfa09eff8963215749a3e927701575a2adcd1f60040a265a2b6c7c3f874b57f"
+    },
+    {
+      "path": "products.jsonl",
+      "size_bytes": 80853,
+      "sha256": "3e904be9bb4338e6fdca419b1856cfa3fb49bbd5bbe5eb45e7ff147df07c6c3f"
+    },
+    {
+      "path": "professional_reviews.jsonl",
+      "size_bytes": 21579,
+      "sha256": "a2a51c427b5d94854bdb4fd439cff37db2dac2be4a61dc10fb8a1d22629706f7"
+    },
+    {
+      "path": "quality_report.json",
+      "size_bytes": 5845,
+      "sha256": "b1cdbe822640a37d82534f39eae58ff57339268257f115074c031fb5598b625f"
+    },
+    {
+      "path": "README.md",
+      "size_bytes": 8258,
+      "sha256": "f21b554acdd2e004b0bdfd3f8fffeca26db6d1940de4f69976e5db378df8bea7"
+    },
+    {
+      "path": "relations.jsonl",
+      "size_bytes": 224091,
+      "sha256": "9f27637ca5b405f227f3086cb5d7bebd6fe5f23ae4662a3bfa8ca28bf00befec"
+    },
+    {
+      "path": "review/aliases.jsonl",
+      "size_bytes": 21844,
+      "sha256": "9e58fec4a545e6451d9fa20da9887f9c9d0aabacf9f25285f01c237d03b4c372"
+    },
+    {
+      "path": "review/entities.jsonl",
+      "size_bytes": 4815,
+      "sha256": "fdae19dfbe40a2bdb7822db6c6fa206de5add3bc4b5e596c4ee6028226793c1e"
+    },
+    {
+      "path": "review/knowledge.jsonl",
+      "size_bytes": 41705,
+      "sha256": "2f9c6418c7d2b99aaab192358b39e141ee05e6650fb9673220bee666ce15889a"
+    },
+    {
+      "path": "review/price_observations.jsonl",
+      "size_bytes": 23370,
+      "sha256": "12922f5a39ae6ff795caa6520e4d31a0149280d7d1fbbd84bcdcabccb58d446e"
+    },
+    {
+      "path": "review/products.jsonl",
+      "size_bytes": 63234,
+      "sha256": "7e2122da5cae4e3a8586fc8fe85e5d21ac25e3a653e14594cd50b53d73ea4fdd"
+    },
+    {
+      "path": "review/professional_reviews.jsonl",
+      "size_bytes": 2840,
+      "sha256": "8c9414378ffa40044bc61e9b8341b08a07c80427558f62ed743adc45c4921ee7"
+    },
+    {
+      "path": "review/relations.jsonl",
+      "size_bytes": 81158,
+      "sha256": "7e0b184a6bd01bd06eb0f6ae8d0c293b606c185e222ee247814def4365cf42fd"
+    },
+    {
+      "path": "review/sources.jsonl",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "review/wineries.jsonl",
+      "size_bytes": 2437,
+      "sha256": "325c0796ae0f2879c4cd2824412c68d10e55e89bcac4dc40d49c730bcab049d1"
+    },
+    {
+      "path": "schema.json",
+      "size_bytes": 14455,
+      "sha256": "6e7f6b6f2a7adb9e0c399e4143d3ef8e46498f848e3dafeb4c11f4815ffc8f7b"
+    },
+    {
+      "path": "sources.jsonl",
+      "size_bytes": 41850,
+      "sha256": "d1bc5f6691743bf3041a235c64013e85104c776f988cd72e9fff06ec1651c3a4"
+    },
+    {
+      "path": "wineries.jsonl",
+      "size_bytes": 17233,
+      "sha256": "58ed3b1e85914192a90c14755e81ed2a3a8708b788751d1918b77e5a69a7d279"
+    }
+  ],
+  "script_hashes": {
+    "clean.py": "73fa1f848395d43c251e31cf9f2f419f56d7ffdf3cffc6035f1c185136994376",
+    "test_clean.py": "4dfd2e9539b13b0f2bfea98fe1c357251b3bcba77e44099e8189e36d6efb233f",
+    "validate.py": "3e875580e27dc2482ba84d40756b6dc12c1ba343692974bff940b740c33e67f6",
+    "rules.json": "2095ef456cf233f19c67aa308002cb5630c8f2f62c230b21c37ef0ee8251afa9"
+  }
+}

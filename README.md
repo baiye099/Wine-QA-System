@@ -1,0 +1,101 @@
+# Wine-QA-System · 宁夏葡萄酒智能问答系统
+
+**当前版本：v0.1.0（预发布，后端框架与数据接入基线）。** 使用 Streamlit + Python + MySQL + Neo4j，面向酒庄查询、产品资料、葡萄酒知识与简单连续问答。
+
+本版已完成两库与知识向量接入，但尚未完成回答质量验收。“有什么酒庄”“列举几款酒”等泛化列表问题目前存在不合理澄清，修复尚未包含在本版中。价格数据尚不支持预算推荐。
+
+- [版本说明](docs/releases/v0.1.0.md) · [变更记录](CHANGELOG.md)
+- [系统架构设计](docs/系统架构设计.md) · [后端框架说明](docs/后端框架说明.md)
+- [公开发布与数据范围](docs/公开发布与数据范围.md)
+
+## 快速运行
+
+在仓库根目录、Python 3.11+ 环境中执行：
+
+```powershell
+python -m pip install -r requirements.txt
+Copy-Item .env.example .env
+python -m qa --interactive
+```
+
+模板默认 `QA_BACKEND=demo`，仅读取正式清洗数据，不连接数据库、不调用模型。`:new` 清空会话，`:quit` 退出。也可以执行单次查询或启动最小页面：
+
+```powershell
+python -m qa "介绍一下西鸽酒庄"
+python -m qa "找几款750毫升的干红" --json
+python -m streamlit run app.py
+```
+
+demo 用于验证规则覆盖范围内的查询和会话流程，不模拟已经就绪的知识语义检索。
+
+## 数据库与模型配置
+
+编辑本地 `.env`，将 `QA_BACKEND` 改为 `database`，填写 `MYSQL_*`、`NEO4J_*`、`LLM_*` 和 `EMBEDDING_*`。真实密码和 API Key 只放在本地 `.env`，不要写进示例、文档或 Git 提交。
+
+- MySQL 使用 `Wine_QA_System`。应用执行只读查询，并核对实际字段与正式数据。
+- Neo4j 使用配置中的实际数据库名；本版开发环境已将项目数据导入 `wine-qa-system`。
+- `QA_DATASET=wine-qa-system` 是库内的数据归属标识，不会切换或迁移实际数据库。
+- 大模型与 Embedding 分别配置；供应商可以不同。当前适配器兼容 `/chat/completions` JSON 模式与 `/embeddings` 浮点向量协议。
+- `EMBEDDING_DIMENSIONS` 必须与服务实际输出一致。当前适配器校验维度，不向接口发送降维参数；例如 Qwen3-Embedding-8B 原生为 4096 维。
+
+MySQL/Neo4j 导入方法见 [数据库说明](database/README.md)。导入 Neo4j 时明确指定实际目标库：
+
+```powershell
+python database/import_neo4j.py --database wine-qa-system --dry-run
+python database/import_neo4j.py --database wine-qa-system --report-file database/neo4j_import_report.json
+```
+
+导入脚本不自动读取 `.env`，会提示输入密码；也可读取进程环境变量。应用启动不会自动建表、导入数据或写入向量。
+
+配置完成后，按需执行：
+
+```powershell
+# 只读检查两库；不请求模型
+python -m scripts.check_backend --online
+
+# 离线写入知识向量并创建索引，会调用配置的 Embedding 服务
+python -m scripts.build_embeddings --batch-size 16
+
+# 要求知识向量与索引完整就绪；不请求模型
+python -m scripts.check_backend --online --require-vectors
+```
+
+构建批次大小应遵守实际模型服务的限制。数据库模式失败不会自动切换 demo；更换文本或模型后需更新对应向量。
+
+## 当前能力与限制
+
+| 范围 | v0.1.0 状态 |
+|---|---|
+| 指定酒庄/产品资料 | 已提供查询与来源整理路径，需继续做真实问句验收 |
+| 类型、容量、单一品种等硬条件 | 校验字段资格与实际值；未知值不当作匹配 |
+| 连续追问 | 提供条件继承/删除与上轮展示顺序定位 |
+| 知识问答 | 提供向量、召回、证据生成接口；就绪不等于答案质量达标 |
+| 泛化列表查询 | 存在缺口，尚未修复 |
+| 价格预算筛选 | 默认关闭，当前合格零售价不足 |
+| 风味等偏好排序 | 仅保存偏好，尚未启用有依据的排序 |
+
+## 验证
+
+```powershell
+python -m unittest discover -s tests -v
+python -m unittest discover -s database -p test_scripts.py -v
+```
+
+本版发布前分别通过 22 项和 23 项离线回归。本地开发环境也已只读验证 `mysql`、`neo4j`、`knowledge` 为 `ready`；这些结果不代表其他机器已经部署完成或实际回答效果已验收。
+
+## 项目结构
+
+```text
+app.py                 Streamlit 薄接入页
+qa/                    问答编排、解析、会话、查询仓库、模型与证据回答
+scripts/               向量构建和按需诊断
+tests/                 后端回归用例
+database/              MySQL SQL、Neo4j 导入和离线测试
+data_cleaning/         原始资料清洗与验证工具
+data/                  正式清洗数据、Schema、manifest 与报告
+docs/                  架构、数据规范和版本说明
+CHANGELOG.md           版本变更记录
+VERSION                当前版本号
+```
+
+原始采集、游客评论、待审材料、审计明细和本地配置不随公开仓库发布，详见 [数据范围](docs/公开发布与数据范围.md)。

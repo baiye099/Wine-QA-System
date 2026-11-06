@@ -1,0 +1,34 @@
+{
+  "mode": "imported",
+  "database": "wine-qa-system",
+  "dataset_name": "wine-qa-system",
+  "node_count": 357,
+  "nodes_by_label": {
+    "Chunk": 138,
+    "Concept": 30,
+    "Document": 49,
+    "Flavor": 52,
+    "GrapeVariety": 11,
+    "Product": 47,
+    "Region": 8,
+    "Winery": 22
+  },
+  "relationship_count": 538,
+  "relationships_by_type": {
+    "ABOUT": 185,
+    "HAS_CHUNK": 143,
+    "HAS_FLAVOR": 77,
+    "LOCATED_IN": 22,
+    "MADE_FROM": 51,
+    "ORIGINATES_FROM": 13,
+    "PRODUCES": 47
+  },
+  "alias_count_as_properties": 191,
+  "snapshot": "b97e7d737f9282b16fa59215951255603296fc5905e9d994d8570cbc86aad28f",
+  "verified_node_count": 357,
+  "verified_relationship_count": 538,
+  "ownership_migration": {
+    "nodes_by_previous_dataset": {},
+    "relationships_by_previous_dataset": {}
+  }
+}
