@@ -3,8 +3,8 @@
 from datetime import datetime, timedelta, timezone
 from math import isfinite
 
-from .config import Settings
-from .schemas import ProductFilters
+from ..core.config import Settings
+from ..schemas.query import ProductFilters
 
 
 def approved_display_price(product: dict) -> dict | None:

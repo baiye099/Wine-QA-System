@@ -1,15 +1,20 @@
-"""读取本项目正式JSONL，供SQL生成和Neo4j导入共用；不连接数据库。"""
+"""读取并核对运行时与离线工具共用的正式数据快照。"""
 
 from __future__ import annotations
 
 import hashlib
 import json
 import re
-from dataclasses import dataclass
 from pathlib import Path
+from typing import TYPE_CHECKING
+
+from ..core.errors import DataVersionError
+from ..models.dataset import Dataset
+
+if TYPE_CHECKING:
+    from ..core.config import Settings
 
 
-ROOT = Path(__file__).resolve().parent.parent
 ID_FIELDS = {
     "sources": "source_id", "wineries": "winery_id", "products": "product_id",
     "price_observations": "price_id", "entities": "entity_id", "aliases": "alias_id",
@@ -47,31 +52,9 @@ def read_jsonl(path: Path) -> list[dict]:
     return result
 
 
-def normalized_alias(value: str) -> str:
-    return re.sub(r"\s+", "", value).casefold()
-
-
 def require(ok: bool, message: str) -> None:
     if not ok:
         raise ValueError(message)
-
-
-@dataclass
-class Dataset:
-    data_dir: Path
-    tables: dict[str, list[dict]]
-    node_types: dict[str, str]
-    snapshot: str
-    hashes: dict[str, str]
-
-    @property
-    def catalog(self) -> list[dict]:
-        rows = []
-        for table, id_key, kind in [("wineries", "winery_id", "Winery"), ("products", "product_id", "Product"), ("entities", "entity_id", None)]:
-            for record in self.tables[table]:
-                rows.append({"entity_id": record[id_key], "entity_type": kind or record["entity_type"],
-                             "name": record["name"], "source_ids": record["source_ids"], "raw_record": record})
-        return sorted(rows, key=lambda r: r["entity_id"])
 
 
 def load_dataset(data_dir: Path) -> Dataset:
@@ -147,3 +130,13 @@ def load_dataset(data_dir: Path) -> Dataset:
                 f"关系端点类型错误: {rel['relation_id']}")
     snapshot = hashlib.sha256(json_text(hashes).encode("utf-8")).hexdigest()
     return Dataset(data_dir, tables, node_types, snapshot, hashes)
+
+
+def runtime_dataset(settings: Settings) -> Dataset:
+    try:
+        dataset = load_dataset(settings.data_dir)
+    except (ValueError, OSError) as exc:
+        raise DataVersionError("正式数据未通过 manifest 或引用校验，请检查 data 目录。") from exc
+    if settings.snapshot and settings.snapshot != dataset.snapshot:
+        raise DataVersionError("QA_SNAPSHOT 与正式 JSONL 的内容快照不一致。")
+    return dataset

@@ -2,17 +2,12 @@
 
 from copy import deepcopy
 
-from database.dataset import Dataset
-
-from .config import Settings
-from .errors import KnowledgeNotReady
-from .filtering import attach_prices, matches_filters
-from .schemas import EntityRef, KnowledgeChunk, ProductFilters, Source
-
-
-def chunk_from_record(row: dict, score: float | None = None) -> KnowledgeChunk:
-    keys = ("knowledge_id", "title", "text", "fact_scope", "category", "entity_ids", "source_ids", "text_type")
-    return KnowledgeChunk(**{key: row[key] for key in keys}, score=score)
+from ..core.config import Settings
+from ..core.errors import KnowledgeNotReady
+from ..models.dataset import Dataset
+from ..models.product_rules import attach_prices, matches_filters
+from ..schemas.query import EntityRef, ProductFilters
+from ..schemas.response import KnowledgeChunk, Source
 
 
 class DemoRepository:
@@ -56,7 +51,7 @@ class DemoRepository:
         return [Source(**{k: self.source_map[s].get(k) for k in keys}) for s in dict.fromkeys(source_ids) if s in self.source_map]
 
     def related(self, entity_ids: list[str], limit: int = 3) -> list[KnowledgeChunk]:
-        return [chunk_from_record(r) for r in self.dataset.tables["knowledge"]
+        return [KnowledgeChunk.from_record(r) for r in self.dataset.tables["knowledge"]
                 if r["retrieval_allowed"] and set(entity_ids).intersection(r["entity_ids"])][:limit]
 
     def ensure_vector_ready(self) -> None:

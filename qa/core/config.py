@@ -11,8 +11,7 @@ from typing import Literal, Mapping
 from pydantic import BaseModel, ConfigDict, Field, SecretStr, ValidationError, model_validator
 
 from .errors import ConfigurationError
-
-ROOT = Path(__file__).resolve().parent.parent
+from .paths import ROOT
 
 
 class Settings(BaseModel):
@@ -73,7 +72,7 @@ class Settings(BaseModel):
         values.update(os.environ if env is None else env)
         names = {"backend": "QA_BACKEND", "data_dir": "QA_DATA_DIR", "dataset": "QA_DATASET",
                  "snapshot": "QA_SNAPSHOT", "max_results": "QA_MAX_RESULTS", "price_enabled": "QA_PRICE_ENABLED",
-                  "price_max_age_days": "QA_PRICE_MAX_AGE_DAYS", "display_price_enabled": "QA_DISPLAY_PRICE_ENABLED"}
+                 "price_max_age_days": "QA_PRICE_MAX_AGE_DAYS", "display_price_enabled": "QA_DISPLAY_PRICE_ENABLED"}
         kwargs = {}
         for field in cls.model_fields:
             value = values.get(names.get(field, field.upper()))

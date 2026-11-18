@@ -2,13 +2,12 @@
 
 from __future__ import annotations
 
-from database.dataset import Dataset
-
-from .config import Settings
-from .demo_repository import chunk_from_record
-from .errors import BackendUnavailable, DataVersionError, KnowledgeNotReady, ModelError
-from .models import validate_vector
-from .schemas import KnowledgeChunk
+from ..core.config import Settings
+from ..core.errors import DataVersionError, KnowledgeNotReady, ModelError
+from ..db.neo4j import connect_neo4j, read_cypher, validate_index
+from ..models.dataset import Dataset
+from ..models.vector import validate_vector
+from ..schemas.response import KnowledgeChunk
 
 CHUNK_SCOPE = """
 k.qa_dataset = $dataset AND k.qa_snapshot = $snapshot
@@ -20,17 +19,6 @@ k.embedding_model = $model AND k.embedding_dimensions = $dimensions
 AND k.embedding_profile = $profile AND k.embedding_text_hash = k.text_hash
 AND size(k.embedding) = $dimensions
 """
-
-
-def validate_index(row: dict, settings: Settings, require_online: bool = True) -> None:
-    config = row.get("options", {}).get("indexConfig", {})
-    # Neo4j 2026.x 的索引元数据可能返回 COSINE；相似度名称不区分大小写。
-    similarity = config.get("vector.similarity_function")
-    cosine = isinstance(similarity, str) and similarity.casefold() == "cosine"
-    if row.get("labelsOrTypes") != ["Chunk"] or row.get("properties") != ["embedding"] or config.get("vector.dimensions") != settings.embedding_dimensions or not cosine:
-        raise KnowledgeNotReady("同名向量索引的标签、属性、维度或相似度与配置不一致，请离线处理。")
-    if require_online and row.get("state") != "ONLINE":
-        raise KnowledgeNotReady("Neo4j 向量索引尚未 ONLINE，请等待离线构建完成。")
 
 
 class Neo4jRepository:
@@ -46,25 +34,11 @@ class Neo4jRepository:
     @property
     def driver(self):
         if self._driver is None:
-            try:
-                from neo4j import GraphDatabase
-            except ImportError:
-                raise BackendUnavailable("缺少 Neo4j Driver，请安装项目 requirements.txt。") from None
-            self._driver = GraphDatabase.driver(self.settings.neo4j_uri,
-                                               auth=(self.settings.neo4j_user, self.settings.neo4j_password.get_secret_value()),
-                                               connection_timeout=5, max_transaction_retry_time=3)
+            self._driver = connect_neo4j(self.settings)
         return self._driver
 
     def _read(self, query: str, **params) -> list[dict]:
-        driver = self.driver
-        from neo4j import READ_ACCESS
-        from neo4j.exceptions import Neo4jError, ServiceUnavailable, SessionExpired
-
-        try:
-            with driver.session(database=self.settings.neo4j_database, default_access_mode=READ_ACCESS) as session:
-                return session.execute_read(lambda tx: [dict(row) for row in tx.run(query, **{**self.parameters, **params})])
-        except (Neo4jError, ServiceUnavailable, SessionExpired) as exc:
-            raise BackendUnavailable("Neo4j 连接或查询失败，请核对实际数据库名、凭据和权限。") from exc
+        return read_cypher(self.driver, self.settings.neo4j_database, query, {**self.parameters, **params})
 
     def _chunks(self, rows: list[dict]) -> list[KnowledgeChunk]:
         result = []
@@ -73,7 +47,7 @@ class Neo4jRepository:
             expected = self.chunk_map.get(row.get("knowledge_id"))
             if expected is None or any(row.get(k) != expected[k] for k in ("title", "text", "entity_ids", "source_ids", "fact_scope", "category", "text_type")):
                 raise DataVersionError("Neo4j 知识正文或适用范围与启用的数据快照不一致。")
-            result.append(chunk_from_record(row, record.get("score")))
+            result.append(KnowledgeChunk.from_record(row, record.get("score")))
         return result
 
     def related(self, entity_ids: list[str], limit: int = 3) -> list[KnowledgeChunk]:
@@ -89,20 +63,28 @@ class Neo4jRepository:
             """, entity_ids=entity_ids, limit=limit)
         return self._chunks(rows)
 
-    def ensure_vector_ready(self) -> None:
-        if not self.settings.embedding_model:
-            raise KnowledgeNotReady("Embedding 模型未配置，知识语义问答尚未就绪。")
-        indexes = self._read("SHOW VECTOR INDEXES YIELD name, state, labelsOrTypes, properties, options WHERE name = $name RETURN state, labelsOrTypes, properties, options",
-                             name=self.settings.neo4j_vector_index)
-        if len(indexes) != 1:
-            raise KnowledgeNotReady("未找到配置的 Neo4j 向量索引，请先运行离线向量构建脚本。")
-        validate_index(indexes[0], self.settings)
-        rows = self._read("MATCH (k:QAEntity:Chunk) WHERE " + CHUNK_SCOPE + " RETURN properties(k) AS chunk")
+    def vector_indexes(self) -> list[dict]:
+        return self._read("""
+            SHOW VECTOR INDEXES YIELD name, state, labelsOrTypes, properties, options
+            WHERE name = $name RETURN state, labelsOrTypes, properties, options
+            """, name=self.settings.neo4j_vector_index)
+
+    def knowledge_records(self) -> list[dict]:
+        rows = self._read("MATCH (k:QAEntity:Chunk) WHERE " + CHUNK_SCOPE
+                          + " RETURN properties(k) AS chunk ORDER BY k.knowledge_id")
         if {r["chunk"].get("knowledge_id") for r in rows} != set(self.chunk_map) or len(rows) != len(self.chunk_map):
             raise DataVersionError("Neo4j 当前快照的知识实体集合与正式数据不一致。")
         self._chunks(rows)
-        for r in rows:
-            k = r["chunk"]
+        return [r["chunk"] for r in rows]
+
+    def ensure_vector_ready(self) -> None:
+        if not self.settings.embedding_model:
+            raise KnowledgeNotReady("Embedding 模型未配置，知识语义问答尚未就绪。")
+        indexes = self.vector_indexes()
+        if len(indexes) != 1:
+            raise KnowledgeNotReady("未找到配置的 Neo4j 向量索引，请先运行离线向量构建脚本。")
+        validate_index(indexes[0], self.settings)
+        for k in self.knowledge_records():
             if (k.get("embedding_model") != self.settings.embedding_model or k.get("embedding_profile") != self.settings.embedding_profile
                     or k.get("embedding_dimensions") != self.settings.embedding_dimensions or k.get("embedding_text_hash") != k.get("text_hash")):
                 raise KnowledgeNotReady("部分知识向量缺失、正文已变更或模型版本不匹配，请重建向量。")
@@ -130,7 +112,7 @@ class Neo4jRepository:
     def search(self, vector: list[float], entity_ids: list[str], category: str | None, limit: int) -> list[KnowledgeChunk]:
         vector = validate_vector(vector, self.settings.embedding_dimensions)
         # 先限定合法候选再精确计算余弦，兼容 Neo4j 5.26，避免全局 ANN 后过滤丢失合格片段。
-        # 当前仅 138 个片段；大规模时可用支持预过滤的 ANN 实现替换此查询。
+        # 当前数据量适合精确计算；大规模时可考虑支持预过滤的 ANN。
         rows = self._read("""
             MATCH (k:QAEntity:Chunk)
             WHERE """ + CHUNK_SCOPE + " AND " + VECTOR_SCOPE + """

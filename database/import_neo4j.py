@@ -12,7 +12,13 @@ import sys
 from collections import Counter, defaultdict
 from pathlib import Path
 
-from dataset import ROOT, RELATION_TYPES, Dataset, json_text, load_dataset, normalized_alias
+if not __package__:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from qa.core.paths import ROOT
+from qa.core.text import normalized_alias
+from qa.db.snapshot import RELATION_TYPES, json_text, load_dataset
+from qa.models.dataset import Dataset
 
 
 DATASET_NAME = "wine-qa-system"

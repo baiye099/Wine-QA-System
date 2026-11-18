@@ -8,11 +8,13 @@ import json
 import sys
 from datetime import datetime, timezone
 
-from qa.config import Settings
-from qa.data import runtime_dataset
-from qa.errors import BackendUnavailable, ConfigurationError, DataVersionError, ModelError, QAError
-from qa.models import HTTPEmbeddingModel, validate_vector
-from qa.neo4j_repository import CHUNK_SCOPE, Neo4jRepository, validate_index
+from qa.clients.http import HTTPEmbeddingModel
+from qa.core.config import Settings
+from qa.core.errors import BackendUnavailable, ConfigurationError, DataVersionError, ModelError, QAError
+from qa.db.neo4j import validate_index
+from qa.db.snapshot import runtime_dataset
+from qa.models.vector import validate_vector
+from qa.repository.neo4j import Neo4jRepository
 
 
 def write_batch(tx, rows: list[dict], parameters: dict) -> None:
@@ -43,15 +45,12 @@ def build(settings: Settings, batch_size: int = 16, force: bool = False) -> dict
         from neo4j.exceptions import Neo4jError, ServiceUnavailable, SessionExpired
 
         repository.ensure_graph_ready()
-        indexes = repository._read("SHOW VECTOR INDEXES YIELD name, state, labelsOrTypes, properties, options WHERE name = $name RETURN state, labelsOrTypes, properties, options",
-                                   name=settings.neo4j_vector_index)
+        indexes = repository.vector_indexes()
         if indexes:
             validate_index(indexes[0], settings, require_online=False)
-        records = repository._read("MATCH (k:QAEntity:Chunk) WHERE " + CHUNK_SCOPE + " RETURN properties(k) AS chunk ORDER BY k.knowledge_id")
-        repository._chunks(records)
+        records = repository.knowledge_records()
         pending = []
-        for record in records:
-            row = record["chunk"]
+        for row in records:
             text_hash = hashlib.sha256(row["text"].encode()).hexdigest()
             if text_hash != row.get("text_hash"):
                 raise DataVersionError("知识文本哈希不匹配，请先按正式快照重新导入图数据。")
@@ -66,7 +65,7 @@ def build(settings: Settings, batch_size: int = 16, force: bool = False) -> dict
                 pending.append(row)
         model = HTTPEmbeddingModel(settings)
         updated_at = datetime.now(timezone.utc).isoformat()
-        with repository.driver.session(database=settings.neo4j_database) as session:
+        with driver.session(database=settings.neo4j_database) as session:
             for start in range(0, len(pending), batch_size):
                 batch = pending[start:start + batch_size]
                 vectors = model.embed([r["text"] for r in batch])

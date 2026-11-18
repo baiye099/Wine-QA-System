@@ -10,9 +10,14 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from dataset import ROOT, load_dataset
-from generate_mysql_sql import build_tables, render_data, sql_value
-from import_neo4j import DATASET_NAME, LEGACY_DATASET_NAMES, apply_snapshot, build_plan, node_query, property_map, relationship_query
+if __name__ == "__main__" and not __package__:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from database.generate_mysql_sql import render_data, sql_value
+from database.import_neo4j import DATASET_NAME, LEGACY_DATASET_NAMES, apply_snapshot, build_plan, node_query, property_map, relationship_query
+from qa.core.paths import ROOT
+from qa.db.mysql_tables import build_tables
+from qa.db.snapshot import load_dataset
 
 
 class FakeResult(list):

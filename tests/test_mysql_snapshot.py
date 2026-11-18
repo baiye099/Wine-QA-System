@@ -3,14 +3,16 @@
 import json
 import re
 import unittest
-from contextlib import nullcontext
+from contextlib import contextmanager, nullcontext
 from copy import deepcopy
 from unittest.mock import patch
 
-from qa.config import ROOT, Settings
-from qa.data import mysql_expected_tables, runtime_dataset
-from qa.errors import DataVersionError
-from qa.mysql_repository import MySQLRepository
+from qa.core.config import Settings
+from qa.core.errors import DataVersionError
+from qa.core.paths import ROOT
+from qa.db.mysql_tables import build_tables
+from qa.db.snapshot import runtime_dataset
+from qa.repository.mysql import MySQLRepository
 
 
 class AliasCursor:
@@ -43,7 +45,8 @@ class MySQLAliasSnapshotTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.dataset = runtime_dataset(Settings())
-        cls.expected = mysql_expected_tables(cls.dataset)["entity_alias"]
+        cls.alias_table = next(t for t in build_tables(cls.dataset) if t.name == "entity_alias")
+        cls.expected = cls.alias_table.rows
         sql = (ROOT / "database" / "02_data_mysql.sql").read_text(encoding="utf-8-sig")
         cls.exported = {}
         for encoded in re.findall(r"CAST\(CONVERT\(X'([0-9a-f]+)' USING utf8mb4\) AS JSON\)", sql, re.IGNORECASE):
@@ -56,10 +59,11 @@ class MySQLAliasSnapshotTests(unittest.TestCase):
         return [{**{k: record[k] for k in columns}, "source_ids": json.dumps(record["source_ids"]),
                  "raw_record": json.dumps(record, ensure_ascii=False)} for record in self.exported.values()]
 
+    @contextmanager
     def repository(self, rows):
-        repo = MySQLRepository(Settings(), self.dataset)
-        repo._connection = lambda: nullcontext(AliasConnection(rows))
-        return repo
+        with (patch("qa.repository.mysql.mysql_read_connection", return_value=nullcontext(AliasConnection(rows))),
+              patch("qa.repository.mysql.build_tables", return_value=[self.alias_table])):
+            yield MySQLRepository(Settings(), self.dataset)
 
     def test_runtime_alias_records_match_published_sql_without_mutating_jsonl(self):
         self.assertEqual(set(self.exported), {r["alias_id"] for r in self.expected})
@@ -70,24 +74,24 @@ class MySQLAliasSnapshotTests(unittest.TestCase):
         self.assertTrue(all("alias_key" not in r for r in self.dataset.tables["aliases"]))
 
     def test_imported_aliases_pass_the_readiness_check(self):
-        repo = self.repository(self.sql_rows())
-        with patch("qa.mysql_repository.mysql_expected_tables", return_value={"entity_alias": self.expected}):
+        with self.repository(self.sql_rows()) as repo:
             repo.ensure_ready()
-        self.assertIsNotNone(repo._checked_at)
+            self.assertIsNotNone(repo._checked_at)
 
     def test_actual_column_or_provenance_changes_are_still_rejected(self):
-        for column in ("alias_key", "raw_record"):
+        for column in ("alias_key", "raw_record", "alias_kind"):
             rows = deepcopy(self.sql_rows())
-            rows[0][column] = "changed" if column == "alias_key" else json.dumps({"changed": True})
-            repo = self.repository(rows)
-            with self.subTest(column=column), patch("qa.mysql_repository.mysql_expected_tables", return_value={"entity_alias": self.expected}):
+            if column == "alias_kind":
+                rows[0].pop(column)
+            else:
+                rows[0][column] = "changed" if column == "alias_key" else json.dumps({"changed": True})
+            with self.subTest(column=column), self.repository(rows) as repo:
                 with self.assertRaises(DataVersionError):
                     repo.ensure_ready()
                 self.assertIsNone(repo._checked_at)
 
     def test_missing_aliases_are_still_rejected(self):
-        repo = self.repository(self.sql_rows()[1:])
-        with patch("qa.mysql_repository.mysql_expected_tables", return_value={"entity_alias": self.expected}):
+        with self.repository(self.sql_rows()[1:]) as repo:
             with self.assertRaises(DataVersionError):
                 repo.ensure_ready()
 

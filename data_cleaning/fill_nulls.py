@@ -14,9 +14,11 @@ from urllib.parse import urlsplit
 
 from clean import ID_KEYS, ROOT, SCRIPT_DIR, read_jsonl, sha256, write_json, write_markdown
 
-sys.path.insert(0, str(ROOT / "database"))
-from dataset import load_dataset
-from generate_mysql_sql import build_tables
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from qa.db.mysql_tables import build_tables
+from qa.db.snapshot import load_dataset
 
 REVISION = "realistic-null-fill-20261116-v1"
 RULES_PATH = SCRIPT_DIR / "realistic_null_fill_rules.json"

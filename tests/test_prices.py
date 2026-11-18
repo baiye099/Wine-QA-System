@@ -5,15 +5,14 @@ from copy import deepcopy
 from datetime import datetime, timedelta, timezone
 from types import SimpleNamespace
 
-from qa.config import Settings
-from qa.data import runtime_dataset
-from qa.demo_repository import DemoRepository
-from qa.filtering import attach_prices, matches_filters
-from qa.mysql_repository import MySQLRepository
+from qa import ConversationState, Settings
+from qa.db.snapshot import runtime_dataset
+from qa.models.product_rules import attach_prices, matches_filters
+from qa.repository.demo import DemoRepository
+from qa.repository.mysql import MySQLRepository
 from qa.schemas import ProductFilters
-from qa.service import QAService
-from qa.session import ConversationState
-from qa.understand import QueryUnderstander
+from qa.service.chat import QAService
+from qa.service.understand import QueryUnderstander
 
 
 class PriceTests(unittest.TestCase):

@@ -4,14 +4,15 @@ from __future__ import annotations
 
 from pydantic import ValidationError
 
+from ..clients.contracts import EmbeddingModel
+from ..core.config import Settings
+from ..core.errors import BackendUnavailable, DataVersionError, KnowledgeNotReady, ModelError
+from ..models.conversation import ConversationState
+from ..models.product_rules import matches_filters
+from ..repository.contracts import FactRepository, KnowledgeRepository
+from ..schemas.query import EntityRef, ParsedQuery, ProductFilters
+from ..schemas.response import QAResponse
 from .answer import AnswerBuilder
-from .config import Settings
-from .errors import BackendUnavailable, DataVersionError, KnowledgeNotReady, ModelError
-from .filtering import matches_filters
-from .models import EmbeddingModel
-from .repositories import FactRepository, KnowledgeRepository
-from .schemas import EntityRef, ParsedQuery, ProductFilters, QAResponse
-from .session import ConversationState
 from .understand import QueryUnderstander
 
 
@@ -163,21 +164,3 @@ class QAService:
         self.facts.close()
         if self.knowledge is not self.facts:
             self.knowledge.close()
-
-
-def build_service(settings: Settings | None = None) -> QAService:
-    from .data import runtime_dataset
-    from .demo_repository import DemoRepository
-    from .models import HTTPChatModel, HTTPEmbeddingModel
-    from .mysql_repository import MySQLRepository
-    from .neo4j_repository import Neo4jRepository
-
-    settings = settings or Settings.from_env()
-    dataset = runtime_dataset(settings)
-    if settings.backend == "demo":
-        facts = knowledge = DemoRepository(dataset, settings)
-    else:
-        facts, knowledge = MySQLRepository(settings, dataset), Neo4jRepository(settings, dataset)
-    chat = HTTPChatModel(settings) if settings.llm_model else None
-    embedding = HTTPEmbeddingModel(settings) if settings.embedding_model else None
-    return QAService(facts, knowledge, settings, QueryUnderstander(chat), AnswerBuilder(chat), embedding)

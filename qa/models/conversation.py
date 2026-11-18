@@ -2,7 +2,8 @@
 
 from dataclasses import dataclass, field
 
-from .schemas import ProductFilters, QAResponse
+from ..schemas.query import ProductFilters
+from ..schemas.response import QAResponse
 
 
 @dataclass

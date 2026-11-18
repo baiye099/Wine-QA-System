@@ -2,7 +2,8 @@
 
 from typing import Protocol
 
-from .schemas import EntityRef, KnowledgeChunk, ProductFilters, Source
+from ..schemas.query import EntityRef, ProductFilters
+from ..schemas.response import KnowledgeChunk, Source
 
 
 class FactRepository(Protocol):

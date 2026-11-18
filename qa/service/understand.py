@@ -7,12 +7,11 @@ import re
 
 from pydantic import ValidationError
 
-from database.dataset import normalized_alias
-
-from .models import ChatModel
-from .errors import ModelError
-from .schemas import EntityRef, ParsedQuery, ProductFilters
-from .session import ConversationState
+from ..clients.contracts import ChatModel
+from ..core.errors import ModelError
+from ..core.text import normalized_alias
+from ..models.conversation import ConversationState
+from ..schemas.query import EntityRef, ParsedQuery, ProductFilters
 
 
 def mentions(question: str, aliases: list[dict]) -> list[EntityRef]:

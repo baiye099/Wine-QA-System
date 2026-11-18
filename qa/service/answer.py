@@ -5,11 +5,11 @@ from __future__ import annotations
 import json
 import re
 
-from pydantic import Field, ValidationError
+from pydantic import ValidationError
 
-from .errors import ModelError
-from .models import ChatModel
-from .schemas import Contract, KnowledgeChunk, QAResponse
+from ..clients.contracts import ChatModel
+from ..core.errors import ModelError
+from ..schemas.response import EvidenceAnswer, KnowledgeChunk, QAResponse
 
 COLORS = {"red": "红", "white": "白", "rose": "桃红", "other": "其他"}
 SWEETNESS = {"dry": "干型", "semi_dry": "半干型", "semi_sweet": "半甜型", "sweet": "甜型", "other": "其他"}
@@ -38,15 +38,6 @@ def product_summary(product: dict, index: int) -> str:
         parts.append(f"展示价格：{product['display_price']['amount']:g} 元（生成数据，非实时零售价）")
     parts.append("适用范围：" + SCOPES.get(product.get("record_scope"), "资料记录范围"))
     return "\n   ".join(parts) + references(product.get("source_ids", []))
-
-
-class EvidenceClaim(Contract):
-    text: str = Field(min_length=1, max_length=800)
-    knowledge_ids: list[str] = Field(min_length=1, max_length=5)
-
-
-class EvidenceAnswer(Contract):
-    claims: list[EvidenceClaim] = Field(min_length=1, max_length=5)
 
 
 class AnswerBuilder:

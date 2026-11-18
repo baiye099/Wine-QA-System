@@ -4,11 +4,11 @@ import argparse
 import json
 import sys
 
-from qa.config import Settings
-from qa.data import runtime_dataset
-from qa.errors import ConfigurationError, KnowledgeNotReady, QAError
-from qa.mysql_repository import MySQLRepository
-from qa.neo4j_repository import Neo4jRepository
+from qa.core.config import Settings
+from qa.core.errors import ConfigurationError, KnowledgeNotReady, QAError
+from qa.db.snapshot import runtime_dataset
+from qa.repository.mysql import MySQLRepository
+from qa.repository.neo4j import Neo4jRepository
 
 
 def main() -> int:

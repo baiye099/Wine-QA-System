@@ -2,29 +2,16 @@
 
 from __future__ import annotations
 
-import json
 import time
-from contextlib import contextmanager
-from decimal import Decimal
 
-from database.dataset import Dataset
-
-from .config import Settings
-from .data import mysql_expected_tables
-from .errors import BackendUnavailable, DataVersionError
-from .filtering import attach_prices, matches_filters
-from .schemas import EntityRef, ProductFilters, Source
-
-JSON_COLUMNS = {"source_ids", "raw_record", "field_filter_eligibility", "field_filter_reasons"}
-PRIMARY_KEYS = {"source_document": ("source_id",), "entity_registry": ("entity_id",), "winery": ("winery_id",),
-                "product": ("product_id",), "price_observation": ("price_id",), "professional_review": ("review_id",),
-                "entity_alias": ("alias_id",), "product_grape": ("product_id", "grape_id"),
-                "region": ("region_id",), "grape_variety": ("grape_id",)}
-
-
-def decode_row(row: dict) -> dict:
-    return {k: json.loads(v) if k in JSON_COLUMNS and isinstance(v, str) else float(v) if isinstance(v, Decimal) else v
-            for k, v in row.items()}
+from ..core.config import Settings
+from ..core.errors import DataVersionError
+from ..db.mysql import decode_row, mysql_read_connection
+from ..db.mysql_tables import build_tables
+from ..models.dataset import Dataset
+from ..models.product_rules import attach_prices, matches_filters
+from ..schemas.query import EntityRef, ProductFilters
+from ..schemas.response import Source
 
 
 def compile_product_query(filters: ProductFilters, product_ids: list[str] | None, limit: int) -> tuple[str, list]:
@@ -63,35 +50,8 @@ class MySQLRepository:
         self.settings, self.dataset = settings, dataset
         self._checked_at: float | None = None
 
-    @contextmanager
-    def _connection(self):
-        try:
-            import pymysql
-        except ImportError:
-            raise BackendUnavailable("缺少 PyMySQL，请安装项目 requirements.txt。") from None
-        connection = None
-        try:
-            connection = pymysql.connect(host=self.settings.mysql_host, port=self.settings.mysql_port,
-                                         user=self.settings.mysql_user, password=self.settings.mysql_password.get_secret_value(),
-                                         database=self.settings.mysql_database, charset="utf8mb4", cursorclass=pymysql.cursors.DictCursor,
-                                         connect_timeout=5, read_timeout=10, write_timeout=10, autocommit=False)
-            with connection.cursor() as cursor:
-                cursor.execute("START TRANSACTION READ ONLY")
-            yield connection
-        except pymysql.MySQLError as exc:
-            raise BackendUnavailable("MySQL 连接或只读查询失败，请检查配置、表结构与只读账号权限。") from exc
-        finally:
-            if connection is not None:
-                try:
-                    try:
-                        connection.rollback()
-                    except pymysql.MySQLError:
-                        pass
-                finally:
-                    connection.close()
-
     def _read(self, query: str, params=()) -> list[dict]:
-        with self._connection() as connection, connection.cursor() as cursor:
+        with mysql_read_connection(self.settings) as connection, connection.cursor() as cursor:
             cursor.execute(query, params)
             return [decode_row(r) for r in cursor.fetchall()]
 
@@ -99,20 +59,22 @@ class MySQLRepository:
         if self._checked_at is not None and time.monotonic() - self._checked_at < 60:
             return
         # MySQL 现有表无快照列：比对全部正式行和真实查询列，不能凭旧报告宣称版本一致。
-        with self._connection() as connection, connection.cursor() as cursor:
-            for table, expected in mysql_expected_tables(self.dataset).items():
-                cursor.execute(f"SELECT * FROM `{table}`")  # table 来自固定映射。
+        with mysql_read_connection(self.settings) as connection, connection.cursor() as cursor:
+            for table in build_tables(self.dataset):
+                cursor.execute(f"SELECT * FROM `{table.name}`")
                 actual = [decode_row(r) for r in cursor.fetchall()]
-                key = lambda r: tuple(r[k] for k in PRIMARY_KEYS[table])
-                expected_map = {key(r): r for r in expected}
-                if len(actual) != len(expected) or {key(r) for r in actual} != set(expected_map):
-                    raise DataVersionError(f"MySQL {table} 的实体集合与启用的数据快照不一致。")
-                for row in actual:
-                    want = expected_map[key(row)]
-                    changed = [column for column, value in row.items() if value != want.get(column)]
+                key_columns = sorted(table.primary)
+                expected_map = {tuple(row[c] for c in key_columns): row for row in table.rows}
+                actual_map = {tuple(row.get(c) for c in key_columns): row for row in actual}
+                if len(actual) != len(table.rows) or actual_map.keys() != expected_map.keys():
+                    raise DataVersionError(f"MySQL {table.name} 的实体集合与启用的数据快照不一致。")
+                for key, row in actual_map.items():
+                    want = expected_map[key]
+                    changed = [c for c in table.columns if c not in row or row[c] != want[c]]
+                    changed.extend(c for c in row if c not in want and row[c] is not None)
                     if changed:
-                        record_id = ", ".join(str(v) for v in key(row))
-                        raise DataVersionError(f"MySQL {table}（{record_id}）的字段 {', '.join(changed)} 与正式 JSONL 不一致，请核对离线发布。")
+                        record_id = ", ".join(str(v) for v in key)
+                        raise DataVersionError(f"MySQL {table.name}（{record_id}）的字段 {', '.join(changed)} 与正式 JSONL 不一致，请核对离线发布。")
         self._checked_at = time.monotonic()
 
     def aliases(self) -> list[dict]:

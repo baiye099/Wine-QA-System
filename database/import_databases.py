@@ -9,14 +9,18 @@ from contextlib import closing
 from datetime import datetime, timezone
 from pathlib import Path
 
-from dataset import ROOT, json_text, load_dataset
-from generate_mysql_sql import build_tables
-from import_neo4j import apply_snapshot, build_plan, ensure_schema
+if not __package__:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-sys.path.insert(0, str(ROOT))
-from qa.config import Settings
-from qa.mysql_repository import MySQLRepository, decode_row
-from qa.neo4j_repository import Neo4jRepository
+from database.import_neo4j import apply_snapshot, build_plan, ensure_schema
+from qa.core.config import Settings
+from qa.core.paths import ROOT
+from qa.db.mysql import connect_mysql, decode_row
+from qa.db.mysql_tables import build_tables
+from qa.db.neo4j import connect_neo4j
+from qa.db.snapshot import json_text, load_dataset
+from qa.repository.mysql import MySQLRepository
+from qa.repository.neo4j import Neo4jRepository
 
 
 def save(path: Path, value) -> None:
@@ -55,9 +59,6 @@ def upsert_mysql(connection, tables, batch_size=50) -> None:
 
 
 def import_all(settings: Settings, base_dir: Path | None, backup_dir: Path, build_vectors: bool) -> dict:
-    import pymysql
-    from neo4j import GraphDatabase
-
     dataset = load_dataset(settings.data_dir)
     tables, plan = build_tables(dataset), build_plan(dataset)
     baseline = load_dataset(base_dir) if base_dir else dataset
@@ -79,17 +80,13 @@ def import_all(settings: Settings, base_dir: Path | None, backup_dir: Path, buil
         if source.is_file():
             (backup_dir / name).write_bytes(source.read_bytes())
     mysql_before = {}
-    with closing(pymysql.connect(host=settings.mysql_host, port=settings.mysql_port, user=settings.mysql_user,
-                password=settings.mysql_password.get_secret_value(), database=settings.mysql_database,
-                charset="utf8mb4", cursorclass=pymysql.cursors.DictCursor, autocommit=False,
-                connect_timeout=5, read_timeout=30, write_timeout=30)) as connection:
+    with closing(connect_mysql(settings, io_timeout=30)) as connection:
         with connection.cursor() as cursor:
             for table in tables:
                 cursor.execute(f"SELECT * FROM `{table.name}`")
                 mysql_before[table.name] = [decode_row(r) for r in cursor.fetchall()]
         save(backup_dir / "mysql_before.json", {"snapshot": baseline.snapshot, "database": settings.mysql_database, "tables": mysql_before})
-        with GraphDatabase.driver(settings.neo4j_uri, auth=(settings.neo4j_user, settings.neo4j_password.get_secret_value()),
-                                  connection_timeout=5, max_transaction_retry_time=3) as driver:
+        with connect_neo4j(settings) as driver:
             with driver.session(database=settings.neo4j_database) as session:
                 nodes = [dict(r) for r in session.run("MATCH (n:QAEntity) WHERE n.qa_dataset=$dataset RETURN labels(n) AS labels, properties(n) AS properties", dataset=settings.dataset)]
                 relations = [dict(r) for r in session.run("MATCH (a:QAEntity)-[r]->(b:QAEntity) WHERE r.qa_dataset=$dataset RETURN a.entity_id AS head_id,b.entity_id AS tail_id,type(r) AS relation_type,properties(r) AS properties", dataset=settings.dataset)]

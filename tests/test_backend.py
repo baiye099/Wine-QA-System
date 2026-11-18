@@ -6,17 +6,16 @@ from datetime import datetime, timedelta, timezone
 
 from pydantic import ValidationError
 
-from qa.answer import AnswerBuilder
-from qa.config import Settings
-from qa.data import runtime_dataset
-from qa.demo_repository import DemoRepository
-from qa.errors import DataVersionError, ModelError
-from qa.filtering import eligible_price, matches_filters
-from qa.models import validate_vector
-from qa.mysql_repository import compile_product_query
+from qa import ConversationState, Settings, build_service
+from qa.core.errors import DataVersionError, ModelError
+from qa.db.snapshot import runtime_dataset
+from qa.models.product_rules import eligible_price, matches_filters
+from qa.models.vector import validate_vector
+from qa.repository.demo import DemoRepository
+from qa.repository.mysql import compile_product_query
 from qa.schemas import KnowledgeChunk, ProductFilters
-from qa.service import QAService, build_service
-from qa.session import ConversationState
+from qa.service.answer import AnswerBuilder
+from qa.service.chat import QAService
 
 
 class BackendTests(unittest.TestCase):

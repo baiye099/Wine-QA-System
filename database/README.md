@@ -20,7 +20,8 @@
 | `import_neo4j.py` | 读取正式JSONL，导入节点、别名属性与关系 |
 | `import_databases.py` | 使用本地配置同步两套数据库，导入前备份、事务内验证与导入后核对；默认只显示计划 |
 | `requirements.txt` | Neo4j Python驱动依赖 |
-| `dataset.py` | 共用的JSONL读取、manifest哈希与引用校验 |
+| [`qa/db/snapshot.py`](../qa/db/snapshot.py) | 共享正式 JSONL 读取、manifest 哈希与引用校验 |
+| [`qa/db/mysql_tables.py`](../qa/db/mysql_tables.py) | 在线校验、SQL 生成和统一导入使用的 MySQL 列映射 |
 | `generate_mysql_sql.py` | 数据更新后重新生成三份MySQL SQL；不执行数据库 |
 | `test_scripts.py` | 离线测试，不访问数据库 |
 

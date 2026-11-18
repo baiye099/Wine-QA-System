@@ -1,10 +1,10 @@
 # Wine-QA-System · 宁夏葡萄酒智能问答系统
 
-**当前版本：v0.1.0（预发布，后端框架与数据接入基线）。** 使用 Streamlit + Python + MySQL + Neo4j，面向酒庄查询、产品资料、葡萄酒知识与简单连续问答。
+**当前版本 v0.2.0（本地开发版）。** 使用 Streamlit、Python、MySQL 和 Neo4j，面向酒庄、葡萄酒产品、条件筛选和知识问答。
 
-本版已完成两库与知识向量接入，但尚未完成回答质量验收。“有什么酒庄”“列举几款酒”等泛化列表问题目前存在不合理澄清，修复尚未包含在本版中。2026-11-17 已接入审核后的生成展示价格，支持产品问价与预算筛选，回答中明确标注价格性质。
+问答后端按入口、服务、数据访问和数据库分包。产品问价与预算筛选使用已审核的展示价格，并在回答中注明来源性质。泛化列表问题仍可能要求补充条件。
 
-- [版本说明](docs/releases/v0.1.0.md) · [变更记录](CHANGELOG.md)
+- [版本说明](docs/releases/v0.2.0.md) · [变更记录](CHANGELOG.md)
 - [系统架构设计](docs/系统架构设计.md) · [后端框架说明](docs/后端框架说明.md)
 - [公开发布与数据范围](docs/公开发布与数据范围.md)
 
@@ -64,7 +64,7 @@ python -m scripts.check_backend --online --require-vectors
 
 ## 当前能力与限制
 
-| 范围 | v0.1.0 状态 |
+| 范围 | v0.2.0 状态 |
 |---|---|
 | 指定酒庄/产品资料 | 已提供查询与来源整理路径，需继续做真实问句验收 |
 | 类型、容量、单一品种等硬条件 | 校验字段资格与实际值；未知值不当作匹配 |
@@ -89,16 +89,25 @@ python -m scripts.check_backend --online --require-vectors
 ```powershell
 python -m unittest discover -s tests -v
 python -m unittest discover -s database -p test_scripts.py -v
+python -m unittest discover -s data_cleaning -p 'test_*.py' -v
 ```
 
-本版发布前分别通过 22 项和 23 项离线回归。本地开发环境也已只读验证 `mysql`、`neo4j`、`knowledge` 为 `ready`；这些结果不代表其他机器已经部署完成或实际回答效果已验收。
-2026-11-17 价格接入后通过29项后端回归，并以实际数据库验证指定产品价格、预算区间和序号追问；Streamlit页面测试验证了问价及预算结果显示，过程未调用外部模型。
+本版通过 29 项后端、23 项数据库工具和 32 项清洗测试。本地验收覆盖 MySQL、Neo4j、已有向量检索和 Streamlit 问价页面。测试范围见 [版本说明](docs/releases/v0.2.0.md)。
 
 ## 项目结构
 
 ```text
-app.py                 Streamlit 薄接入页
-qa/                    问答编排、解析、会话、查询仓库、模型与证据回答
+app.py                 Streamlit 启动文件
+qa/                    问答应用，python -m qa 从此启动
+  router/              页面与命令行交互
+  service/             问题理解、问答编排与回答生成
+  schemas/             查询、响应和证据的 Pydantic 契约
+  models/              会话、数据快照与业务规则
+  repository/          事实与知识仓库，负责具体查询
+  db/                  连接、事务、快照及 MySQL 字段映射
+  clients/             外部大模型和 Embedding 接口
+  core/                配置、异常、路径和文本处理
+  bootstrap.py         根据配置组装服务
 scripts/               向量构建和按需诊断
 tests/                 后端回归用例
 database/              MySQL SQL、Neo4j 导入和离线测试

@@ -3,9 +3,9 @@
 import unittest
 from copy import deepcopy
 
-from qa.config import Settings
-from qa.errors import KnowledgeNotReady
-from qa.neo4j_repository import validate_index
+from qa.core.config import Settings
+from qa.core.errors import KnowledgeNotReady
+from qa.db.neo4j import validate_index
 
 
 class VectorIndexTests(unittest.TestCase):

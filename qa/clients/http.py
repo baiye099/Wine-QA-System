@@ -1,28 +1,10 @@
-"""可替换的模型契约与兼容 HTTP 适配器；理解与 Embedding 分开配置。"""
+"""兼容 Chat Completions 与 Embeddings 的 HTTP 适配器。"""
 
 from __future__ import annotations
 
-import math
-from typing import Protocol
-
-from .config import Settings
-from .errors import ModelError
-
-
-class ChatModel(Protocol):
-    def complete_json(self, messages: list[dict[str, str]]) -> str: ...
-
-
-class EmbeddingModel(Protocol):
-    def embed(self, texts: list[str]) -> list[list[float]]: ...
-
-
-def validate_vector(vector: list, dimensions: int) -> list[float]:
-    if not isinstance(vector, list) or len(vector) != dimensions or any(isinstance(v, bool) or not isinstance(v, (int, float)) or not math.isfinite(v) for v in vector):
-        raise ModelError("Embedding 维度或数值不合法，请核对模型配置。")
-    if not any(vector):
-        raise ModelError("Embedding 不能为零向量。")
-    return [float(v) for v in vector]
+from ..core.config import Settings
+from ..core.errors import ModelError
+from ..models.vector import validate_vector
 
 
 class CompatibleHTTP:
