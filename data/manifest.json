@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "rules_version": "1.0.0",
-  "as_of_date": "2026-11-06",
+  "as_of_date": "2026-11-16",
   "raw_root": "E:\\PythonProject\\NLP\\QASystem\\data_raw",
   "output_root": "E:\\PythonProject\\NLP\\QASystem\\data",
   "raw_files_unchanged": true,
@@ -89,6 +89,12 @@
       "size_bytes": 88075,
       "sha256": "e3f17a5e57e567af0509debc14a03eda1c54f0bde746f6c723f68461a51f19cf",
       "handling": "read_canonical_or_crosscheck"
+    },
+    {
+      "path": "data_raw/宁夏数据集-黄伟杰/SHA256.txt",
+      "size_bytes": 6813,
+      "sha256": "099093783eb41cb49725f72488e178ebfac4beee770969d192341a8eb4bf2fb8",
+      "handling": "alternate_export_or_context_not_reimported"
     },
     {
       "path": "data_raw/宁夏数据集-黄伟杰/aliases.csv",
@@ -185,12 +191,6 @@
       "size_bytes": 16021,
       "sha256": "360ce0993bbb755a919be8dd654d71f044b343a01bace25a9fe719477be5fb01",
       "handling": "read_canonical_or_crosscheck"
-    },
-    {
-      "path": "data_raw/宁夏数据集-黄伟杰/SHA256.txt",
-      "size_bytes": 6813,
-      "sha256": "099093783eb41cb49725f72488e178ebfac4beee770969d192341a8eb4bf2fb8",
-      "handling": "alternate_export_or_context_not_reimported"
     },
     {
       "path": "data_raw/宁夏数据集-黄伟杰/sources.csv",
@@ -545,13 +545,109 @@
       "size_bytes": 1242,
       "sha256": "cc2a6d04abbd13c079c2ed7d3008fe14da39aba1c431657b14c0969e4f68f176",
       "handling": "alternate_export_or_context_not_reimported"
+    },
+    {
+      "path": "data_raw/葡萄酒通用常识知识库_20261111/wine_general_knowledge/README.md",
+      "size_bytes": 5098,
+      "sha256": "485339d81ff07f2efebf4af1735d964415a1b167ba4147080fdfb816ea11d3d8",
+      "handling": "general_knowledge_canonical_or_export_crosscheck"
+    },
+    {
+      "path": "data_raw/葡萄酒通用常识知识库_20261111/wine_general_knowledge/build_dataset.py",
+      "size_bytes": 9465,
+      "sha256": "e8249378182f71b659c0730ccf775b72b14d09fb62e9153ddb0d4a8a05e9dde0",
+      "handling": "general_knowledge_canonical_or_export_crosscheck"
+    },
+    {
+      "path": "data_raw/葡萄酒通用常识知识库_20261111/wine_general_knowledge/curated_data.py",
+      "size_bytes": 30064,
+      "sha256": "63394a4a9cde2d3b21487e727262784e002791e1a6f8bea6f29f53d1167d38ab",
+      "handling": "general_knowledge_canonical_or_export_crosscheck"
+    },
+    {
+      "path": "data_raw/葡萄酒通用常识知识库_20261111/wine_general_knowledge/data/aliases.jsonl",
+      "size_bytes": 3457,
+      "sha256": "54815509c23e02886c37d39ac92c6dee92a6dd48d25e6040f643632369344902",
+      "handling": "general_knowledge_canonical_or_export_crosscheck"
+    },
+    {
+      "path": "data_raw/葡萄酒通用常识知识库_20261111/wine_general_knowledge/data/faq.jsonl",
+      "size_bytes": 38729,
+      "sha256": "55c90c829fe034ce0f5e44640643f5ae6ee4bd2cfdf6239aee923d4abe32c607",
+      "handling": "general_knowledge_canonical_or_export_crosscheck"
+    },
+    {
+      "path": "data_raw/葡萄酒通用常识知识库_20261111/wine_general_knowledge/data/knowledge.jsonl",
+      "size_bytes": 67417,
+      "sha256": "8a5bc941f6f77c6ffd20428fe4a6e281db17f00df9a235e3e8909ab45f561183",
+      "handling": "general_knowledge_canonical_or_export_crosscheck"
+    },
+    {
+      "path": "data_raw/葡萄酒通用常识知识库_20261111/wine_general_knowledge/data/manifest.json",
+      "size_bytes": 2132,
+      "sha256": "0e07d2507a62d5469f50d0f4e995efa43de87f6f3a90b77a7cc8c25b6c8c50b2",
+      "handling": "general_knowledge_canonical_or_export_crosscheck"
+    },
+    {
+      "path": "data_raw/葡萄酒通用常识知识库_20261111/wine_general_knowledge/data/rag_documents.jsonl",
+      "size_bytes": 66537,
+      "sha256": "3bb50d05c241031be27cf10500b2bc55450966f10275da21f6c27acb60c82fc3",
+      "handling": "general_knowledge_canonical_or_export_crosscheck"
+    },
+    {
+      "path": "data_raw/葡萄酒通用常识知识库_20261111/wine_general_knowledge/data/retrieval_smoke_questions.jsonl",
+      "size_bytes": 5365,
+      "sha256": "3cb994422064b7a26a3ddffa81a3af1909967c3f831bdc9d36909ffbfb6ba469",
+      "handling": "general_knowledge_canonical_or_export_crosscheck"
+    },
+    {
+      "path": "data_raw/葡萄酒通用常识知识库_20261111/wine_general_knowledge/data/sources.jsonl",
+      "size_bytes": 17777,
+      "sha256": "af14b792ec9ea21adbc7faeee8043f65ab5b7b9975090ed7cb745d4fd7691433",
+      "handling": "general_knowledge_canonical_or_export_crosscheck"
+    },
+    {
+      "path": "data_raw/葡萄酒通用常识知识库_20261111/wine_general_knowledge/data/wine_knowledge.sqlite",
+      "size_bytes": 270336,
+      "sha256": "cc4cee25596a28febcdd1ce399b8a0cea850293fbca7efd725a2d41189fcc9be",
+      "handling": "general_knowledge_canonical_or_export_crosscheck"
+    },
+    {
+      "path": "data_raw/葡萄酒通用常识知识库_20261111/wine_general_knowledge/data/葡萄酒通用常识.txt",
+      "size_bytes": 37669,
+      "sha256": "a34d819f43a4f36b450212acbdab9a105e52dc1b391a16d056b78f13946711e2",
+      "handling": "general_knowledge_canonical_or_export_crosscheck"
+    },
+    {
+      "path": "data_raw/葡萄酒通用常识知识库_20261111/wine_general_knowledge/query.py",
+      "size_bytes": 1867,
+      "sha256": "bcb4c5f3568de566b11e520ab981dfbd035af6d7b5dce26fbac3381c37602cc7",
+      "handling": "general_knowledge_canonical_or_export_crosscheck"
+    },
+    {
+      "path": "data_raw/葡萄酒通用常识知识库_20261111/wine_general_knowledge/schema/knowledge.schema.json",
+      "size_bytes": 1247,
+      "sha256": "abacbfa038236398238febec42076c1b716ba930a0b745c7cf7bc4af9edf6055",
+      "handling": "general_knowledge_canonical_or_export_crosscheck"
+    },
+    {
+      "path": "data_raw/葡萄酒通用常识知识库_20261111/wine_general_knowledge/validate.py",
+      "size_bytes": 2920,
+      "sha256": "393549b1f082f5810ace92875631b6728ff26e02a3cbaf08d47207fd4f9195c9",
+      "handling": "general_knowledge_canonical_or_export_crosscheck"
+    },
+    {
+      "path": "data_raw/葡萄酒通用常识知识库_20261111/wine_general_knowledge/validation_report.json",
+      "size_bytes": 6820,
+      "sha256": "892f60071119c450d8f5472f1cec2eaf6455c9414f8f6558a14a6f17785969ed",
+      "handling": "general_knowledge_canonical_or_export_crosscheck"
     }
   ],
   "output_files": [
     {
       "path": "aliases.jsonl",
-      "size_bytes": 74712,
-      "sha256": "9e255d95b6688c51ca5262c97eeb4fa256832b74d37cd6a0ad50762b5ddb4b58"
+      "size_bytes": 100991,
+      "sha256": "b182c7038b07d95d12ab565252058870f8d5c186c2ae79df13588feca14b1de8"
     },
     {
       "path": "audit/derived_records.jsonl",
@@ -574,6 +670,21 @@
       "sha256": "ddb2c47faf62d36c6b7066edc732e048d48be80170f24bee019342d42fd3fbc4"
     },
     {
+      "path": "audit/general_knowledge/existing_knowledge_overlaps.jsonl",
+      "size_bytes": 4080,
+      "sha256": "07bfeedb45fe36c4a5a7453a38d8b9c0aa125565eb67ccb85ff0e128bd59a691"
+    },
+    {
+      "path": "audit/general_knowledge/knowledge_lineage.jsonl",
+      "size_bytes": 89031,
+      "sha256": "b5806f35b1cee4439fd9a99b989f4f942cd5ee8352b6a3c07049e50b838260c8"
+    },
+    {
+      "path": "audit/general_knowledge/overlap_merge_decisions.jsonl",
+      "size_bytes": 6104,
+      "sha256": "604f48e7bdf6dfd7837ba5f514324d727894d8d24acbb4675c6a14ecf78f3dce"
+    },
+    {
       "path": "audit/id_mapping.jsonl",
       "size_bytes": 57438,
       "sha256": "73f361cd88fefae5a2981f4315d873dacc3f5517d0a214f930333912f0a20f1b"
@@ -584,6 +695,16 @@
       "sha256": "0e6db72e5a771155c6e34feed1172abae607dcd5ed300f49bee72526f0d71173"
     },
     {
+      "path": "audit/null_fill_changes.jsonl",
+      "size_bytes": 90094,
+      "sha256": "61978b392326786eb0d8b9736639231f827f1e112e05b001e3aed13def14015a"
+    },
+    {
+      "path": "audit/null_fill_dependencies.jsonl",
+      "size_bytes": 1498,
+      "sha256": "ba0d8ef8a9054f6718b09503fd9bf74d5a133f24ffb3390426a42e282fb50b87"
+    },
+    {
       "path": "audit/quality_issues.jsonl",
       "size_bytes": 128113,
       "sha256": "8e2defc47c248c8f3a8dd2d32cbe60977048f0ab1e32a04da2ee47955ce8f284"
@@ -592,6 +713,26 @@
       "path": "audit/review_decisions.jsonl",
       "size_bytes": 496320,
       "sha256": "9b817183a435541968d472168e5a6a845931ca45078e6a23d6ea7d843708b811"
+    },
+    {
+      "path": "auxiliary/general_knowledge/faq.jsonl",
+      "size_bytes": 39387,
+      "sha256": "1f562df47e47e8206f59715632247ef9c718a2f2199d1e12e9a9eaf243768ca0"
+    },
+    {
+      "path": "auxiliary/general_knowledge/retrieval_alias_hints.jsonl",
+      "size_bytes": 714,
+      "sha256": "0baf16082dd3028a6c3fb35b6df691524f6b7ceeba74bcb103d2c0c8b5b06473"
+    },
+    {
+      "path": "auxiliary/general_knowledge/retrieval_smoke_questions.jsonl",
+      "size_bytes": 7115,
+      "sha256": "fb8857088877254da68713bdc056ea2be580495adf1839fa774d9b8ea0d1af62"
+    },
+    {
+      "path": "auxiliary/general_knowledge/term_alias_groups.jsonl",
+      "size_bytes": 3813,
+      "sha256": "6fe1540ed3831945e96777ebd15ccfaae8dd30deec0a1492969e26cce8e21ce1"
     },
     {
       "path": "auxiliary/review_sources.jsonl",
@@ -605,8 +746,8 @@
     },
     {
       "path": "entities.jsonl",
-      "size_bytes": 52776,
-      "sha256": "3c9cf1db4ac91e1596e6978af5eaf0b0ccd82184e80d3d218681e28fde3b3b4b"
+      "size_bytes": 115349,
+      "sha256": "cc93ed64c6d465a90dba9e8be877a3a7a07ee4e1d218fac37d1c84bbb1a0f72d"
     },
     {
       "path": "excluded/aliases.jsonl",
@@ -660,38 +801,48 @@
     },
     {
       "path": "knowledge.jsonl",
-      "size_bytes": 110405,
-      "sha256": "6fc18e7510aa421e0e540fec1db4b37ea5c450acf1a9613d8f8c40ac22aff5d7"
+      "size_bytes": 255933,
+      "sha256": "65dfcb050fa79ac567666d2513133c6e9d2e1820bde8455d14c8a197321fb5c1"
+    },
+    {
+      "path": "merge_report.json",
+      "size_bytes": 15005,
+      "sha256": "d72352cd9686c7cd47a0349fcae7b1cc30c83421b5c380fb92a02206f908de59"
+    },
+    {
+      "path": "null_fill_report.json",
+      "size_bytes": 1883,
+      "sha256": "5a9cca27ceddf43c721a41a7187fffbefb15cbc81984c2b281470526654c3dce"
     },
     {
       "path": "price_observations.jsonl",
-      "size_bytes": 10228,
-      "sha256": "1cfa09eff8963215749a3e927701575a2adcd1f60040a265a2b6c7c3f874b57f"
+      "size_bytes": 13438,
+      "sha256": "a39042aca483a57f82f3ad24e7ea29365bd8e51295834e000227570873d8cfa0"
     },
     {
       "path": "products.jsonl",
-      "size_bytes": 80853,
-      "sha256": "3e904be9bb4338e6fdca419b1856cfa3fb49bbd5bbe5eb45e7ff147df07c6c3f"
+      "size_bytes": 130815,
+      "sha256": "2b3dc71371219f5938d228252707c44a81677ef3f7cc55d0527794ce30d6754f"
     },
     {
       "path": "professional_reviews.jsonl",
-      "size_bytes": 21579,
-      "sha256": "a2a51c427b5d94854bdb4fd439cff37db2dac2be4a61dc10fb8a1d22629706f7"
+      "size_bytes": 29624,
+      "sha256": "f28d19f50c726bd254c055b5738406db6cd12e445f8083f92103d1eda35e494b"
     },
     {
       "path": "quality_report.json",
-      "size_bytes": 5845,
-      "sha256": "b1cdbe822640a37d82534f39eae58ff57339268257f115074c031fb5598b625f"
+      "size_bytes": 6726,
+      "sha256": "a3bd5e90edf8f6c105e1bafa06b271f11b1526d31c51206e946d984a23bd52ec"
     },
     {
       "path": "README.md",
-      "size_bytes": 8258,
-      "sha256": "f21b554acdd2e004b0bdfd3f8fffeca26db6d1940de4f69976e5db378df8bea7"
+      "size_bytes": 9841,
+      "sha256": "c2c8ddb8004d60ffdf4ca0b0ba77a310f5e929103d0f11e8c91c0f5d579cebe6"
     },
     {
       "path": "relations.jsonl",
-      "size_bytes": 224091,
-      "sha256": "9f27637ca5b405f227f3086cb5d7bebd6fe5f23ae4662a3bfa8ca28bf00befec"
+      "size_bytes": 334642,
+      "sha256": "79195f1c8325db009ca0a5b5c001bb427db8b7ed9b2b2c75f40d7d98dc52a5fd"
     },
     {
       "path": "review/aliases.jsonl",
@@ -740,24 +891,35 @@
     },
     {
       "path": "schema.json",
-      "size_bytes": 14455,
-      "sha256": "6e7f6b6f2a7adb9e0c399e4143d3ef8e46498f848e3dafeb4c11f4815ffc8f7b"
+      "size_bytes": 15042,
+      "sha256": "cd4031059e733fa1be5fd80d44290fc867022191a4237b18d702ff9656f82125"
     },
     {
       "path": "sources.jsonl",
-      "size_bytes": 41850,
-      "sha256": "d1bc5f6691743bf3041a235c64013e85104c776f988cd72e9fff06ec1651c3a4"
+      "size_bytes": 82760,
+      "sha256": "d21d63e6ef7882a482f8222e18afab2a55de5303a5669148de238f9643ffd7bf"
     },
     {
       "path": "wineries.jsonl",
-      "size_bytes": 17233,
-      "sha256": "58ed3b1e85914192a90c14755e81ed2a3a8708b788751d1918b77e5a69a7d279"
+      "size_bytes": 41870,
+      "sha256": "f6f301b16c0b52557b936bc30ef75fc2859b18907a726c2dec4a4f77e6fa36fa"
     }
   ],
   "script_hashes": {
     "clean.py": "73fa1f848395d43c251e31cf9f2f419f56d7ffdf3cffc6035f1c185136994376",
+    "clean_general_knowledge.py": "9b25f39c19b6a7752e8e3e8e7815f6bb7cef9293fac5f5b4df869d9c562416af",
+    "fill_nulls.py": "a788effc4804d3b7b2e60dcd19d18f49ea0c4948f03944b0de715dde591bc47d",
+    "merge_general_knowledge.py": "890f177391804be85441cb55bd78917d940974056723e02c3274312c775bef44",
     "test_clean.py": "4dfd2e9539b13b0f2bfea98fe1c357251b3bcba77e44099e8189e36d6efb233f",
-    "validate.py": "3e875580e27dc2482ba84d40756b6dc12c1ba343692974bff940b740c33e67f6",
-    "rules.json": "2095ef456cf233f19c67aa308002cb5630c8f2f62c230b21c37ef0ee8251afa9"
-  }
+    "test_fill_nulls.py": "0f2d6a508b605c39c129d12bfa18ed8ae788c4e9a76b3cd61324b19946d9f7c7",
+    "test_general_knowledge.py": "0b064f61307088e74023e483d0369ff3cd1e58fefc7e57b6c3caa0995f716995",
+    "test_merge_general_knowledge.py": "e2740711ab79a9ba12569ca39ec2198342409c75b46357222e5691d6b8193adf",
+    "validate.py": "dbbe20f544efde828de0164f28a20d8dbf66a6faa412206dcb362137639a3fb2"
+  },
+  "merge_base_manifest_sha256": "5896128b6e8a33e10a014a996e77fdf56e478c7b45c1dd0218ded77d1905e52d",
+  "increment_manifest_sha256": "b6ded2c7e139e1b687406b83d0347bfc54e62c98d55cd0bc1d4333167c27980b",
+  "incremental_rules_sha256": "612729c66be96f90492b8d7e08e3a97b6acf6ce9db34b270cccbad2f859c042c",
+  "null_fill_revision": "realistic-null-fill-20261116-v1",
+  "null_fill_base_manifest_sha256": "594a4c189c6da93a01a8cc77534433b45e79892ac5e64a9891576737adff29ea",
+  "null_fill_rules_sha256": "896f444f28d4067d6bc70d8c2f795d557aee3ae51afe92accc8260e09f7999bd"
 }

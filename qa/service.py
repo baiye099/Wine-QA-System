@@ -101,9 +101,10 @@ class QAService:
                 return QAResponse(status="clarification", text="筛选条件中的实体类型或数值范围不正确，请明确品种、酒庄或区域。")
             response = QAResponse(status="empty", intent="filter", effective_filters=filters,
                                   text="当前正式数据没有满足全部条件的记录，未自动放宽条件。")
-            if (filters.price_min is not None or filters.price_max is not None) and not self.settings.price_enabled:
+            if ((filters.price_min is not None or filters.price_max is not None)
+                    and not self.settings.price_enabled and not self.settings.display_price_enabled):
                 response.status = "not_ready"
-                response.text = "当前零售价数据不足，预算筛选尚未启用。已保留条件，不能使用历史、批发或礼盒报价替代。"
+                response.text = "价格筛选尚未启用。已保留预算条件，请启用已核验报价或系统展示价格后再查询。"
                 return response
             scope_ids = state.last_results if parsed.scope == "last_results" else None
             if parsed.scope == "last_results" and not scope_ids:

@@ -58,10 +58,10 @@ class BackendTests(unittest.TestCase):
 
     def test_budget_is_not_silently_removed_on_next_turn(self):
         response = self.service.ask("找几款不超过100元的干红", self.state)
-        self.assertEqual(response.status, "not_ready")
+        self.assertEqual(response.status, "empty")
         self.assertEqual(response.products, [])
         following = self.service.ask("要含赤霞珠的", self.state)
-        self.assertEqual(following.status, "not_ready")
+        self.assertEqual(following.status, "empty")
         self.assertEqual(following.effective_filters.price_max, 100)
 
     def test_unknown_field_is_not_treated_as_match(self):

@@ -1,0 +1,70 @@
+{
+  "revision": "realistic-null-fill-20261116-v1",
+  "as_of_date": "2026-11-16",
+  "base_snapshot": "a0e0cd5b72c5f12907734be66bbb3c8b3cff493c06f59179f7133c905e64411d",
+  "null_cells_before": 634,
+  "filled_cells": 533,
+  "expected_null_cells_after": 101,
+  "fills_by_table": {
+    "winery": 137,
+    "product": 294,
+    "product_grape": 41,
+    "price_observation": 20,
+    "professional_review": 41
+  },
+  "fills_by_field": {
+    "winery": {
+      "company_founded_year": 21,
+      "address_raw": 21,
+      "email": 21,
+      "founded_year": 18,
+      "website": 19,
+      "address_normalized": 17,
+      "telephone": 16,
+      "company_name": 4
+    },
+    "product": {
+      "vintage": 14,
+      "is_sparkling": 41,
+      "price_cny": 47,
+      "color": 5,
+      "grapes_complete": 38,
+      "series": 34,
+      "volume_ml": 31,
+      "sweetness": 11,
+      "sweetness_raw": 23,
+      "region_id": 34,
+      "alcohol_pct_vol": 16
+    },
+    "product_grape": {
+      "proportion_pct": 41
+    },
+    "price_observation": {
+      "pack_quantity": 10,
+      "minimum_order_raw": 10
+    },
+    "professional_review": {
+      "score": 7,
+      "score_scale": 7,
+      "score_raw": 24,
+      "summary": 3
+    }
+  },
+  "origins": {
+    "generated": 399,
+    "reused": 7,
+    "public_source": 15,
+    "derived": 112
+  },
+  "year_status_dependencies": 14,
+  "knowledge_text_unchanged": true,
+  "called_external_model": false,
+  "protected_nulls": {
+    "source_document.published_at": 66,
+    "price_observation.verified_at": 10,
+    "product.non_vintage_year": 3,
+    "professional_review.medal": 11,
+    "professional_review.competition_year": 11
+  },
+  "note": "用户授权的真实风格测试填充。业务字段不加占位前缀；生成、派生、复用和公开资料在null_fill元数据分别记录。生成的网站、邮箱及电话号码不保证可访问或可联系。"
+}

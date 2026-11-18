@@ -205,7 +205,12 @@
           "maximum": 100
         },
         "price_cny": {
-          "type": "null"
+          "type": [
+            "number",
+            "null"
+          ],
+          "exclusiveMinimum": 0,
+          "description": "非空值仅用于经审核的展示价格，须有null_fill.price_cny来源记录，不表示已核验零售价。"
         },
         "grape_varieties": {
           "type": "array"
@@ -220,7 +225,26 @@
           }
         }
       },
-      "additionalProperties": true
+      "additionalProperties": true,
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "price_cny"
+            ],
+            "properties": {
+              "price_cny": {
+                "type": "number"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "null_fill"
+            ]
+          }
+        }
+      ]
     },
     "price_observations": {
       "type": "object",

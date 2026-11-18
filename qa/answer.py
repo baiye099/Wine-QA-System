@@ -31,10 +31,12 @@ def product_summary(product: dict, index: int) -> str:
         parts.append(f"酒精度：{product['alcohol_pct_vol']:g}%vol")
     grapes = product.get("grape_varieties", [])
     parts.append("已披露品种：" + ("、".join(g["name"] + (f" {g['proportion_pct']:g}%" if g.get("proportion_pct") is not None else "（配比未披露）") for g in grapes) if grapes else "未披露"))
-    parts.append("适用范围：" + SCOPES.get(product.get("record_scope"), "资料记录范围"))
     if product.get("eligible_price"):
         price = product["eligible_price"]
         parts.append(f"已核验单瓶报价：{price['amount_min']:g} 元；核验时间：{price['verified_at']}" + references([price["source_id"]]))
+    elif product.get("display_price"):
+        parts.append(f"展示价格：{product['display_price']['amount']:g} 元（生成数据，非实时零售价）")
+    parts.append("适用范围：" + SCOPES.get(product.get("record_scope"), "资料记录范围"))
     return "\n   ".join(parts) + references(product.get("source_ids", []))
 
 
@@ -65,7 +67,10 @@ class AnswerBuilder:
                          + (winery.get("introduction") or "暂未收录酒庄介绍。") + references(winery.get("source_ids", [])))
         if response.evidence:
             lines.append("相关采集摘要：\n" + "\n".join(f"- {k.text}（适用范围：{k.fact_scope}）" + references(k.source_ids) for k in response.evidence))
-        if response.products and not any(p.get("eligible_price") for p in response.products):
+        if any(p.get("display_price") for p in response.products):
+            if response.effective_filters.price_min is not None or response.effective_filters.price_max is not None:
+                lines.append("预算按各产品展示的价格筛选；其中生成价格用于系统演示，不代表可下单的实时零售价。")
+        elif response.products and not any(p.get("eligible_price") for p in response.products):
             lines.append("当前零售价未核验，不能据此判断预算或可下单价格。")
         return "\n\n".join(lines)
 

@@ -1,0 +1,39 @@
+{
+  "rules_version": "1.0.0",
+  "category_map": {
+    "基础与成分": "wine_basics",
+    "分类与风格": "wine_basics",
+    "品鉴与口感": "tasting",
+    "颜色与酿造": "wine_basics",
+    "起泡酒与工艺": "wine_basics",
+    "甜度与标签": "wine_basics",
+    "风土与种植": "wine_basics",
+    "常见缺陷与误区": "wine_basics",
+    "酿造与陈年": "wine_basics",
+    "葡萄品种": "grape",
+    "香气与品鉴": "tasting",
+    "年份与标签": "wine_basics",
+    "储存与侍酒": "serving",
+    "开瓶与保鲜": "storage",
+    "餐酒搭配": "pairing",
+    "封口与误区": "wine_basics"
+  },
+  "category_overrides": {
+    "WK073": {"expected_title": "长期储存条件", "category": "storage"},
+    "WK074": {"expected_title": "软木塞与摆放", "category": "storage"},
+    "WK080": {"expected_title": "不是越老越好", "category": "storage"},
+    "WK081": {"expected_title": "陈年与香气变化", "category": "storage"},
+    "WK082": {"expected_title": "陈年与单宁", "category": "storage"}
+  },
+  "grape_terms": [
+    "黑比诺", "霞多丽", "雷司令", "长相思", "赤霞珠", "梅洛",
+    "西拉", "歌海娜", "品丽珠", "小味儿多", "马尔贝克", "佳美娜"
+  ],
+  "retrieval_only_aliases": {
+    "%vol": "酒精体积分数的表示单位，保留为检索提示，不建立与酒精度概念的同义实体关系。",
+    "TCA": "原卡说明TCA与软木塞污染有关；关联物质与污染现象分开，只保留检索提示。"
+  },
+  "overlap_similarity_threshold": 0.38,
+  "external_verification": "not_performed",
+  "output_policy": "incremental_bundle_under_data_cleaning_no_database_import"
+}

@@ -165,6 +165,10 @@ class QueryUnderstander:
 
     def analyze(self, question: str, state: ConversationState, aliases: list[dict]) -> ParsedQuery:
         baseline = self.rules.analyze(question, state, aliases)
+        if (baseline.intent == "filter" and (baseline.filters.price_min is not None or baseline.filters.price_max is not None)
+                or baseline.intent == "product" and re.search(r"多少钱|价格|价钱|售价|单价", question)):
+            # 已识别对象/预算的问价走结构化价格链路，避免被模型改成知识检索。
+            return baseline
         if self.model is None:
             return baseline
         system = ("你是宁夏葡萄酒查询解析器。只返回符合 schema 的 JSON，绝不生成 SQL、Cypher 或执行命令。"

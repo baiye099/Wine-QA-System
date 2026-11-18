@@ -1,12 +1,12 @@
 {
   "rules_version": "1.0.0",
-  "as_of_date": "2026-11-06",
+  "as_of_date": "2026-11-16",
   "counts": {
     "sources": {
-      "accepted": 49,
+      "accepted": 84,
       "review": 0,
       "excluded": 0,
-      "total": 49
+      "total": 84
     },
     "wineries": {
       "accepted": 22,
@@ -33,28 +33,28 @@
       "total": 34
     },
     "knowledge": {
-      "accepted": 138,
+      "accepted": 228,
       "review": 47,
       "excluded": 0,
-      "total": 185
+      "total": 275
     },
     "entities": {
-      "accepted": 101,
+      "accepted": 200,
       "review": 11,
       "excluded": 0,
-      "total": 112
+      "total": 211
     },
     "aliases": {
-      "accepted": 191,
+      "accepted": 236,
       "review": 57,
       "excluded": 0,
-      "total": 248
+      "total": 293
     },
     "relations": {
-      "accepted": 538,
+      "accepted": 746,
       "review": 203,
       "excluded": 0,
-      "total": 741
+      "total": 949
     },
     "visitor_reviews": {
       "input_rows": 9725,
@@ -66,33 +66,33 @@
   },
   "product_fields": {
     "vintage": {
-      "all_non_null": 42,
-      "accepted_non_null": 30,
+      "all_non_null": 56,
+      "accepted_non_null": 44,
       "accepted_filter_usable": 29
     },
     "volume_ml": {
-      "all_non_null": 30,
-      "accepted_non_null": 16,
+      "all_non_null": 61,
+      "accepted_non_null": 47,
       "accepted_filter_usable": 16
     },
     "color": {
-      "all_non_null": 78,
-      "accepted_non_null": 42,
+      "all_non_null": 83,
+      "accepted_non_null": 47,
       "accepted_filter_usable": 41
     },
     "sweetness": {
-      "all_non_null": 64,
-      "accepted_non_null": 36,
+      "all_non_null": 75,
+      "accepted_non_null": 47,
       "accepted_filter_usable": 31
     },
     "alcohol_pct_vol": {
-      "all_non_null": 41,
-      "accepted_non_null": 31,
+      "all_non_null": 57,
+      "accepted_non_null": 47,
       "accepted_filter_usable": 29
     },
     "region_id": {
-      "all_non_null": 13,
-      "accepted_non_null": 13,
+      "all_non_null": 47,
+      "accepted_non_null": 47,
       "accepted_filter_usable": 13
     },
     "grape_varieties": {
@@ -101,8 +101,8 @@
       "accepted_filter_usable": 34
     },
     "is_sparkling": {
-      "all_non_null": 6,
-      "accepted_non_null": 6,
+      "all_non_null": 47,
+      "accepted_non_null": 47,
       "accepted_filter_usable": 4
     }
   },
@@ -119,7 +119,7 @@
     "rag_documents": 234
   },
   "source_evidence": {
-    "collector_summary": 38,
+    "collector_summary": 73,
     "unknown": 3,
     "search_snippet": 8
   },
@@ -167,14 +167,15 @@
   "knowledge_categories": {
     "winery_intro": 33,
     "product_intro": 48,
-    "serving": 9,
-    "wine_basics": 7,
-    "storage": 10,
-    "tasting": 30,
-    "pairing": 1
+    "serving": 15,
+    "wine_basics": 49,
+    "storage": 19,
+    "tasting": 40,
+    "pairing": 4,
+    "grape": 20
   },
   "knowledge_origins": {
-    "collector_summary": 43,
+    "collector_summary": 133,
     "regenerated_from_clean_records": 68,
     "professional_review_summary": 27
   },
@@ -258,7 +259,35 @@
     "没有合格当前零售价，不支持当前零售价预算筛选；参考报价单独展示。",
     "未指定年份页面不外推具体年份；混合来源缺少字段精确归因时保守停用对应筛选。",
     "旅游/平台评论全部为辅助待审资料，不进入正式RAG和产品风味图。",
-    "未生成embedding；正式文本与结构验收后再统一向量化。",
-    "现有通用知识以保存、侍酒和品鉴为主；颜色/甜度基础与品种百科仍需补充。"
-  ]
+    "已加入90条通用常识，原有地域、品种趋势、侍酒参考与保鲜条件随正文保留；本地整理未重新联网核验。",
+    "清洗与合并本身不构建向量，数据库及向量构建结果以database中的实际报告为准。",
+    "2026-11-16用户授权补齐533个业务空值。生成值与原始采集值通过null_fill字段来源区分，保留原来的筛选和价格核验资格。"
+  ],
+  "base_cleaning_as_of_date": "2026-11-06",
+  "incremental_counts": {
+    "sources": 35,
+    "knowledge_cards": 90,
+    "faq": 90,
+    "alias_groups": 20,
+    "smoke_questions": 25,
+    "categories": 16
+  },
+  "null_fill": {
+    "revision": "realistic-null-fill-20261116-v1",
+    "filled_cells": 533,
+    "fills_by_table": {
+      "winery": 137,
+      "product": 294,
+      "product_grape": 41,
+      "price_observation": 20,
+      "professional_review": 41
+    },
+    "origins": {
+      "generated": 399,
+      "reused": 7,
+      "public_source": 15,
+      "derived": 112
+    },
+    "expected_null_cells_after": 101
+  }
 }

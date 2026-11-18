@@ -1,14 +1,14 @@
 -- 只读校验与查询示例；首次导入空库时actual_count应等于expected。
 USE `Wine_QA_System`;
-SELECT 'source_document' AS table_name, 49 AS expected_on_fresh_database, COUNT(*) AS actual_count FROM `source_document`
+SELECT 'source_document' AS table_name, 84 AS expected_on_fresh_database, COUNT(*) AS actual_count FROM `source_document`
 UNION ALL
-SELECT 'entity_registry' AS table_name, 170 AS expected_on_fresh_database, COUNT(*) AS actual_count FROM `entity_registry`
+SELECT 'entity_registry' AS table_name, 269 AS expected_on_fresh_database, COUNT(*) AS actual_count FROM `entity_registry`
 UNION ALL
 SELECT 'region' AS table_name, 8 AS expected_on_fresh_database, COUNT(*) AS actual_count FROM `region`
 UNION ALL
 SELECT 'winery' AS table_name, 22 AS expected_on_fresh_database, COUNT(*) AS actual_count FROM `winery`
 UNION ALL
-SELECT 'grape_variety' AS table_name, 11 AS expected_on_fresh_database, COUNT(*) AS actual_count FROM `grape_variety`
+SELECT 'grape_variety' AS table_name, 17 AS expected_on_fresh_database, COUNT(*) AS actual_count FROM `grape_variety`
 UNION ALL
 SELECT 'product' AS table_name, 47 AS expected_on_fresh_database, COUNT(*) AS actual_count FROM `product`
 UNION ALL
@@ -16,7 +16,7 @@ SELECT 'product_grape' AS table_name, 51 AS expected_on_fresh_database, COUNT(*)
 UNION ALL
 SELECT 'price_observation' AS table_name, 10 AS expected_on_fresh_database, COUNT(*) AS actual_count FROM `price_observation`
 UNION ALL
-SELECT 'entity_alias' AS table_name, 191 AS expected_on_fresh_database, COUNT(*) AS actual_count FROM `entity_alias`
+SELECT 'entity_alias' AS table_name, 236 AS expected_on_fresh_database, COUNT(*) AS actual_count FROM `entity_alias`
 UNION ALL
 SELECT 'professional_review' AS table_name, 30 AS expected_on_fresh_database, COUNT(*) AS actual_count FROM `professional_review`;
 

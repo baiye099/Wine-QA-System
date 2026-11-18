@@ -4,7 +4,7 @@
 
 ## 1. 目录与交付
 
-本文件夹与项目根目录的 `data_raw`、`data` 同级。全部清洗代码集中在本文件夹；业务结果、待核验记录、辅助评论与审计结果都写入 `data`。
+本文件夹与项目根目录的 `data_raw`、`data` 同级。全部清洗代码集中在本文件夹；原宁夏资料包的业务结果、待核验记录、辅助评论与审计结果写入 `data`。2026-11-15 新增的通用常识资料按本次要求写入本文件夹下的独立增量目录，见第8节。
 
 ```text
 QASystem/
@@ -15,6 +15,13 @@ QASystem/
     validate.py              输出验证与文件完整性验证
     test_clean.py            关键边界情况回归测试
     README.md                本说明
+    clean_general_knowledge.py  通用常识增量清洗与验证
+    general_knowledge_rules.json  分类映射、名称保护与检索术语规则
+    test_general_knowledge.py  通用常识语义和追溯边界测试
+    fill_nulls.py             经审核的空值补齐与原值保护
+    realistic_null_fill_rules.json  本次自然风格填充值与来源
+    test_fill_nulls.py        空值、原值保护和来源标记测试
+    wine_general_knowledge_20261111/  本次新增的JSON/JSONL数据、说明与报告
   data/
     *.jsonl                  可供正式问答加载的主数据
     review/                  待核验主记录
@@ -108,7 +115,7 @@ python data_cleaning/clean.py --raw-dir data_raw --output-dir data --as-of-date 
 
 所有报价作为独立观察保留，原币金额、币种、报价性质、销售单位、起订条件和日期不混并。参考报价分为正式可追溯参考记录与待核验记录，后者位于review。
 
-本次未联网核验零售条件，因此 33 条报价的 `current_retail_eligible`、`strict_price_filter_eligible` 始终为 false；产品 `price_cny` 始终为 null。HKD 不自动折算 CNY，历史建议价、出厂价、扫码价不升级为当前零售价，观察日不替代报价日。
+基础清洗未联网核验零售条件，因此 33 条报价的 `current_retail_eligible`、`strict_price_filter_eligible` 始终为 false；基础结果的产品 `price_cny` 为 null。2026-11-16 经用户审核，正式产品补入了生成的展示金额，来源记录在 `null_fill` 元数据，未改变零售价核验资格，见第9节。HKD 不自动折算 CNY，历史建议价、出厂价、扫码价不升级为当前零售价，观察日不替代报价日。
 
 ### 4.5 知识与图关系
 
@@ -158,3 +165,62 @@ python data_cleaning/clean.py --raw-dir data_raw --output-dir data --as-of-date 
 9,725行评论输入包含多个导出载体；确认重复合并后为3,137条，其中3,135条辅助待审、2条低信息量排除。不能将它们称为3,137位独立消费者或3,137条已验证购买评价。
 
 清洗完成的是可追溯的本地数据整理，不是外部真实性认证。继续开发时，先读取根目录 accepted 数据；review、excluded、auxiliary用于质量复核，不与正式RAG混合加载。需要当前价格、完整SKU或尚未覆盖的知识主题时，依据质量报告补采资料，再重新运行清洗。
+
+## 8. 2026-11-15 新增通用常识增量包
+
+本批原始输入：`D:/Desktop/葡萄酒通用常识知识库_20261111/`。16个原文件已原样归档到项目
+`data_raw/葡萄酒通用常识知识库_20261111/`，桌面原目录保持不变。增量清洗结果位于
+[`wine_general_knowledge_20261111/`](wine_general_knowledge_20261111/README.md)。按后续要求，已合并到主 `data` 并导入两套数据库。
+
+独立检查了原包16个文件的完整性、90条知识卡、35个来源、20组别名、90条FAQ、25条开发题，
+以及JSONL、TXT、RAG导出和SQLite之间的内容一致性。未执行原包中的程序或命令。
+规范化沿用原 `clean.py` 的文本处理和稳定ID方法，输出字段通过项目原有JSON Schema检查。
+
+本批正式结果为90条知识、35个来源、107个主题/品种实体、51条规范别名和208条图关系。
+保留原16类主题，并映射到项目现有6种知识分类。检索正文包含问题、回答和适用范围，
+使原答案中的“可以”“不是”与前提保持在同一段内。`%vol`和`TCA`保留为检索提示，避免建立不准确的同义概念关系。
+
+与旧库无知识/来源编号冲突，内部无同范围规范正文重复；文本规则标出11对旧库重叠候选，
+详见增量目录的 `audit/existing_knowledge_overlaps.jsonl`。候选不是穷尽的语义检查结果，
+所有原知识的来源和条件均保留。FAQ等导出副本与开发题不计为新增独立知识。
+
+```powershell
+python data_cleaning/clean_general_knowledge.py --baseline-dir work/data_merge_20261115_b97e7d737f92/baseline_data --as-of-date 2026-11-15
+python data_cleaning/clean_general_knowledge.py --validate-only
+python -m unittest discover -s data_cleaning -p "test_*.py" -v
+```
+
+主 `data` 已由原138条知识增至228条，来源84个、正式实体200个、别名236条、关系746条。
+MySQL与Neo4j已实际导入并核对通过，状态见 `database/database_import_report.json`。
+本次已按用户许可仅发送新增90条知识到SiliconFlow并生成向量，原138条向量保持一致，228条知识向量全部就绪。实际状态与发送范围见 `database/backend_check_report.json` 和 `database/embedding_build_report.json`。
+外部网页事实没有重新核验；来源的 `page_read` 与编辑核对状态均明确标为原包报告。
+
+### 本批合并复现
+
+`merge_general_knowledge.py` 先合并到独立目录，按ID保留共享记录两侧的来源和原始位置，验收后才可用 `--apply` 写回主data。
+本次基准完整副本保存在 `work/data_merge_20261115_b97e7d737f92/baseline_data`。重建相同批次可执行：
+
+```powershell
+python data_cleaning/merge_general_knowledge.py --base-dir work/data_merge_20261115_b97e7d737f92/baseline_data --output-dir work/data_merge_20261115_b97e7d737f92/rebuilt_data --as-of-date 2026-11-15
+python data_cleaning/validate.py
+```
+
+重建命令只生成独立结果。`--apply` 要求主data仍与指定基准完整一致，防止覆盖合并之后的更新。
+原 `clean.py` 只处理宁夏结构化包；今后不要只执行旧命令覆盖主data而遗漏本次通用常识。
+
+## 9. 2026-11-16 经审核的空值填充
+
+按用户审核后的方案，已补齐正式数据中的533处SQL列空值：酒庄137处、产品294处、产品品种配比41处、报价20处、专业评价41处。公司名、地址、联系方式和系列名采用自然风格；公开资料、已有值复用、派生值和生成值分别记录在逐字段 `null_fill` 元数据中。生成的网站、电话和邮箱未被认定为可访问或可联系。
+
+保留101处语义上应为空的字段：来源发布日期66处、报价核验时间10处、NV产品年份3处、非赛事评价奖牌及赛事年份各11处。原有非空业务值保留，14条产品年份状态随补入的年份联动更新；配比的产品内副本同步更新。原知识正文及228条检索向量和元数据保持一致，本次未调用外部模型。
+
+`data/null_fill_report.json` 为统计，`data/audit/null_fill_changes.jsonl` 为533处逐字段前后值，`data/audit/null_fill_dependencies.jsonl` 为年份状态联动记录。实际数据库验收见 `database/null_fill_execution_report.json`。MySQL和Neo4j均已同步且核对通过。
+
+填充前完整主数据位于 `work/null_fill_20261116_a0e0cd5b72c5/baseline_data`，数据库及原向量备份位于同级 `database_before`。复现到独立目录：
+
+```powershell
+python data_cleaning/fill_nulls.py --base-dir work/null_fill_20261116_a0e0cd5b72c5/baseline_data --output-dir work/null_fill_20261116_a0e0cd5b72c5/rebuilt_filled_data
+python data_cleaning/validate.py
+```
+
+填充脚本仅接受本次审核的基准快照。`--apply` 要求主data仍等于该基准，本次已填充后的主data不能再次套用。今后重跑基础清洗或通用知识合并，应先输出到独立目录，保留已审核的填充值后再发布。

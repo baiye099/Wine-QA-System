@@ -125,9 +125,9 @@ class ImportScriptTests(unittest.TestCase):
         self.assertNotIn("DROP TABLE", first)
 
     def test_neo4j_node_and_relationship_counts(self):
-        self.assertEqual(len(self.plan["nodes"]), 357)
-        self.assertEqual(len(self.plan["relations"]), 538)
-        self.assertEqual(self.plan["summary"]["nodes_by_label"]["Chunk"], 138)
+        self.assertEqual(len(self.plan["nodes"]), 581)
+        self.assertEqual(len(self.plan["relations"]), 746)
+        self.assertEqual(self.plan["summary"]["nodes_by_label"]["Chunk"], 228)
         self.assertEqual(self.plan["summary"]["dataset_name"], "wine-qa-system")
 
     def test_neo4j_properties_are_native_or_serialized(self):
@@ -157,7 +157,7 @@ class ImportScriptTests(unittest.TestCase):
     def test_transaction_orders_nodes_before_relationships(self):
         tx = RecordingTransaction(self.plan)
         result = apply_snapshot(tx, self.plan, 200)
-        self.assertEqual(result["verified_node_count"], 357)
+        self.assertEqual(result["verified_node_count"], 581)
         node_positions = [i for i, (q, _) in enumerate(tx.calls) if "count(n) AS imported" in q]
         rel_positions = [i for i, (q, _) in enumerate(tx.calls) if "count(r) AS imported" in q]
         self.assertLess(max(node_positions), min(rel_positions))
@@ -179,8 +179,8 @@ class ImportScriptTests(unittest.TestCase):
                     existing_nodes=[self.node_metadata(n, old_name) for n in self.plan["nodes"]],
                     existing_relations=[self.relation_metadata(r, old_name) for r in self.plan["relations"]])
                 result = apply_snapshot(tx, self.plan, 200)
-                self.assertEqual(result["ownership_migration"]["nodes_by_previous_dataset"], {old_name: 357})
-                self.assertEqual(result["ownership_migration"]["relationships_by_previous_dataset"], {old_name: 538})
+                self.assertEqual(result["ownership_migration"]["nodes_by_previous_dataset"], {old_name: 581})
+                self.assertEqual(result["ownership_migration"]["relationships_by_previous_dataset"], {old_name: 746})
                 for query, params in tx.calls:
                     if "AS imported" in query:
                         self.assertTrue(all(r["properties"]["qa_dataset"] == DATASET_NAME for r in params["rows"]))

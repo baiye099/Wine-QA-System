@@ -12,7 +12,7 @@ from database.dataset import Dataset
 from .config import Settings
 from .data import mysql_expected_tables
 from .errors import BackendUnavailable, DataVersionError
-from .filtering import eligible_price, matches_filters
+from .filtering import attach_prices, matches_filters
 from .schemas import EntityRef, ProductFilters, Source
 
 JSON_COLUMNS = {"source_ids", "raw_record", "field_filter_eligibility", "field_filter_reasons"}
@@ -131,11 +131,18 @@ class MySQLRepository:
         grapes = self._by_ids("SELECT pg.product_id, pg.grape_id AS entity_id, g.name, pg.proportion_pct, pg.source_ids FROM product_grape pg JOIN grape_variety g ON g.grape_id = pg.grape_id WHERE pg.product_id IN ({ids}) ORDER BY pg.grape_id", ids)
         for row in rows:
             row["grape_varieties"] = [{k: v for k, v in g.items() if k != "product_id"} for g in grapes if g["product_id"] == row["product_id"]]
+        return rows
+
+    def _attach_prices(self, rows: list[dict]) -> list[dict]:
+        quotes = self._by_ids("SELECT * FROM price_observation WHERE product_id IN ({ids})",
+                              [r["product_id"] for r in rows]) if self.settings.price_enabled else []
+        attach_prices(rows, quotes, self.settings)
+        for row in rows:
             row.pop("raw_record", None)
         return rows
 
     def products(self, product_ids: list[str]) -> list[dict]:
-        rows = self._attach_grapes(self._by_ids("SELECT * FROM v_product_basic WHERE product_id IN ({ids})", product_ids))
+        rows = self._attach_prices(self._attach_grapes(self._by_ids("SELECT * FROM v_product_basic WHERE product_id IN ({ids})", product_ids)))
         mapped = {r["product_id"]: r for r in rows}
         return [mapped[pid] for pid in dict.fromkeys(product_ids) if pid in mapped]
 
@@ -146,23 +153,12 @@ class MySQLRepository:
         return rows
 
     def filter_products(self, filters: ProductFilters, product_ids: list[str] | None, limit: int) -> list[dict]:
-        prices = {}
-        if filters.price_min is not None or filters.price_max is not None:
-            if not self.settings.price_enabled:
-                return []
-            rows = self._read("SELECT po.*, p.record_scope, p.vintage_status, p.volume_ml, p.field_filter_eligibility FROM v_eligible_retail_price ep JOIN price_observation po ON po.price_id = ep.price_id JOIN product p ON p.product_id = po.product_id")
-            for row in rows:
-                if eligible_price(row, row, self.settings):
-                    amount = row["amount_min"]
-                    if (filters.price_min is None or amount >= filters.price_min) and (filters.price_max is None or amount <= filters.price_max):
-                        prices[row["product_id"]] = row
-            product_ids = [pid for pid in (list(prices) if product_ids is None else product_ids) if pid in prices]
-        query, params = compile_product_query(filters, product_ids, limit)
-        rows = self._attach_grapes(self._read(query, params))
-        for row in rows:
-            if row["product_id"] in prices:
-                row["eligible_price"] = prices[row["product_id"]]
-        return [r for r in rows if matches_filters(r, filters)]
+        has_budget = filters.price_min is not None or filters.price_max is not None
+        # 价格资格在Python中检查；必须先筛完预算，再截取展示数量。
+        candidate_limit = len(self.dataset.tables["products"]) if has_budget else limit
+        query, params = compile_product_query(filters, product_ids, candidate_limit)
+        rows = self._attach_prices(self._attach_grapes(self._read(query, params)))
+        return [r for r in rows if matches_filters(r, filters)][:limit]
 
     def sources(self, source_ids: list[str]) -> list[Source]:
         return [Source(**r) for r in self._by_ids("SELECT source_id, title, url, publisher, evidence_form FROM source_document WHERE source_id IN ({ids})", source_ids)]

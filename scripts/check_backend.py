@@ -24,7 +24,8 @@ def main() -> int:
         dataset = runtime_dataset(settings)
         report = {"backend": settings.backend, "snapshot": dataset.snapshot, "counts": {k: len(v) for k, v in dataset.tables.items()},
                   "connected_database": False, "model_called": False, "llm_configured": bool(settings.llm_model),
-                  "embedding_configured": bool(settings.embedding_model), "price_enabled": settings.price_enabled}
+                  "embedding_configured": bool(settings.embedding_model), "price_enabled": settings.price_enabled,
+                  "display_price_enabled": settings.display_price_enabled}
         if args.online:
             if settings.backend != "database":
                 raise ConfigurationError("在线诊断需要显式设置 QA_BACKEND=database。")

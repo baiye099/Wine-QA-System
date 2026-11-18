@@ -7,6 +7,7 @@ from qa.errors import QAError
 from qa.service import build_service
 from qa.session import ConversationState
 
+SERVICE_REVISION = "display-prices-v1"
 
 def show_details(details: dict) -> None:
     for notice in details.get("notices", []):
@@ -29,8 +30,11 @@ def main() -> None:
     st.title("宁夏葡萄酒智能问答")
     st.caption("查询酒庄和产品资料、筛选产品、了解葡萄酒知识。")
     try:
-        if "qa_service" not in st.session_state:
+        if "qa_service" not in st.session_state or st.session_state.get("qa_service_revision") != SERVICE_REVISION:
+            if "qa_service" in st.session_state:
+                st.session_state.qa_service.close()
             st.session_state.qa_service = build_service(Settings.from_env())
+            st.session_state.qa_service_revision = SERVICE_REVISION
         if "qa_state" not in st.session_state:
             st.session_state.qa_state = ConversationState()
             st.session_state.qa_details = {}
@@ -46,7 +50,7 @@ def main() -> None:
             st.session_state.qa_details = {}
             st.rerun()
         st.write("可以这样问：")
-        st.caption("介绍一下西鸽酒庄\n\n找几款 750 毫升的干红\n\n要含赤霞珠的\n\n第二款是哪家酒庄的？")
+        st.caption("介绍一下西鸽酒庄\n\n找几款 750 毫升的干红\n\n要含赤霞珠的\n\n300元以下的葡萄酒\n\n第二款多少钱？")
     for index, message in enumerate(state.messages):
         with st.chat_message(message["role"]):
             st.markdown(message["content"])

@@ -1,6 +1,6 @@
 # 清洗数据结构与使用说明
 
-数据版本：1.0.0；评估日期：2026-11-06。
+数据版本：1.0.0；评估日期：2026-11-15。
 
 目录与 `data_raw`、`data_cleaning` 同级。所有业务和审计数据均为 UTF-8 JSON/JSONL，文档使用 Markdown。JSONL 每个非空行是一个 JSON 对象；null 表示未知，数组是真实数组，数值不夹带单位。
 
@@ -8,14 +8,14 @@
 
 | 文件 | 正式 accepted | 待核验 review | 排除 excluded |
 |---|---:|---:|---:|
-| `aliases.jsonl` | 191 | 57 | 0 |
-| `entities.jsonl` | 101 | 11 | 0 |
-| `knowledge.jsonl` | 138 | 47 | 0 |
+| `aliases.jsonl` | 236 | 57 | 0 |
+| `entities.jsonl` | 200 | 11 | 0 |
+| `knowledge.jsonl` | 228 | 47 | 0 |
 | `price_observations.jsonl` | 10 | 23 | 0 |
 | `products.jsonl` | 47 | 40 | 0 |
 | `professional_reviews.jsonl` | 30 | 4 | 0 |
-| `relations.jsonl` | 538 | 203 | 0 |
-| `sources.jsonl` | 49 | 0 | 0 |
+| `relations.jsonl` | 746 | 203 | 0 |
+| `sources.jsonl` | 84 | 0 | 0 |
 | `wineries.jsonl` | 22 | 3 | 0 |
 
 根目录同名 JSONL 只含 accepted；review/ 与 excluded/ 中的同名文件保存对应候选或排除记录，不能一起加载进正式问答。空文件表示该状态为0条。
@@ -27,7 +27,7 @@
 | 文件 | 主键与内容 | 使用方式 |
 |---|---|---|
 | wineries.jsonl | winery_id；name、company_name、region_id、location_raw、地址、founded_year、company_founded_year、introduction、联系方式 | MySQL酒庄表；按ID到Neo4j关联 |
-| products.jsonl | product_id；winery_id、name、series、年份/年份状态、容量、颜色、甜度、酒精度、品种列表、描述、字段筛选资格 | MySQL产品主数据；price_cny本批保持null |
+| products.jsonl | product_id；winery_id、name、series、年份/年份状态、容量、颜色、甜度、酒精度、品种列表、描述、字段筛选资格 | MySQL产品主数据；price_cny含审定生成的展示金额，见null_fill元数据 |
 | price_observations.jsonl | price_id；product_id、金额上下限、币种、单位、报价类型、报价/观察日期、起订条件、资格 | 参考报价，不能用作当前零售价 |
 | entities.jsonl | entity_id；entity_type、name、region_kind | Region可生成MySQL产区表；其余为Neo4j实体 |
 | aliases.jsonl | alias_id；alias、entity_id、entity_type、alias_kind、ambiguous | 实体名称匹配；一个名称允许多个目标 |
@@ -51,12 +51,12 @@ accepted仅表示本轮本地清洗检查通过；不能解释成网站真实性
 - grape_varieties为明确且无冲突的披露列表，各项含entity_id、name、proportion_pct和source_ids；未知配比为null。完整百分比确实合计100时grapes_complete才可置true，不补比例。
 - 每次条件筛选同时检查 strict_product_filter_eligible、field_filter_eligibility[目标字段]和值本身。主记录accepted不代表所有字段可筛选。field_filter_reasons解释缺失、来源归因、特殊配方等原因。
 - 未指定年份的官网页面只在该记录范围内使用，不为所有年份继承参数、评分或风味。
-- price_cny全部为空；价格只在独立观察表中。current_retail_eligible与strict_price_filter_eligible本批均false。参考报价必须带性质、币种、日期/日期不明、单位和起订条件。
+- price_cny的空值已生成展示金额，字段来源标记为generated；当前可用售价仍由独立核验报价决定。current_retail_eligible与strict_price_filter_eligible本批均false。参考报价必须带性质、币种、日期/日期不明、单位和起订条件。
 - is_sparkling未知为null；没有“起泡”字样不能反推为false。P043含米酒的特殊配方保留介绍、停用普通葡萄酒筛选。
 
 ## 图关系与节点映射
 
-来源S...→Document；酒庄W...→Winery；产品P...→Product；entities按entity_type建节点；知识K.../KP_.../KR_...→Chunk。关系包含PRODUCES、LOCATED_IN、ORIGINATES_FROM、MADE_FROM、HAS_FLAVOR、HAS_CHUNK、ABOUT；PART_OF仅在有明确依据时建立，本批不猜测区域层级。
+来源S.../GS...→Document；酒庄W...→Winery；产品P...→Product；entities按entity_type建节点；知识K.../KP_.../KR_.../WK...→Chunk。关系包含PRODUCES、LOCATED_IN、ORIGINATES_FROM、MADE_FROM、HAS_FLAVOR、HAS_CHUNK、ABOUT；PART_OF仅在有明确依据时建立，本批不猜测区域层级。
 HAS_FLAVOR来自该具体酒款/年份的来源描述，未自动传播到同品牌或其他年份。风味字面标签不代表量化强度。HAS_CHUNK为来源追溯边，faithful_summary仍表示采集摘要。
 
 ## 辅助评论
@@ -104,3 +104,16 @@ matched = [p for p in products
 ```
 
 脚本示例只筛选数据已支持的字段。当前价格预算查询应返回“当前零售价数据不足”，不能自行把参考报价填入产品price_cny。
+
+## 通用常识合并（2026-11-15）
+
+原138条正式知识与新增90条合并为228条。8个共享实体和6条共享别名按业务ID合并来源与追溯，正式实体200个、别名236条、来源84个、图关系746条。原产品、酒庄、价格和专业评价完整保留。
+
+通用知识的text包含问题、回答和适用范围；question、answer、category_raw另行保留。FAQ和开发题位于auxiliary/general_knowledge，不重复索引。11对文本重叠候选的逐对合并决定见audit/general_knowledge/overlap_merge_decisions.jsonl。新资料原件保存在data_raw/葡萄酒通用常识知识库_20261111。
+
+完整复跑须先将原宁夏资料清洗到独立基准目录，再清洗通用知识并执行data_cleaning/merge_general_knowledge.py。不要仅用旧clean.py覆盖主data而遗漏本次新增知识。数据库导入和向量状态见../database中的报告。
+
+
+## 已审核空值填充（2026-11-16）
+
+业务空值由634处减至101处，填充533处。公司名称优先对应公开资料，地区复用所属酒庄；34条系列按审核名单编排。生成参数和联系方式仅作测试，逐字段来源与原值保存在null_fill和audit/null_fill_changes.jsonl。原有非空业务值保留，14条年份状态随新增年份联动。来源发布日期、报价核验时间、3款NV酒年份以及非赛事奖项等101处空值保留。知识正文和228条向量保持原样，不调用外部模型。

@@ -6,7 +6,7 @@ from database.dataset import Dataset
 
 from .config import Settings
 from .errors import KnowledgeNotReady
-from .filtering import eligible_price, matches_filters
+from .filtering import attach_prices, matches_filters
 from .schemas import EntityRef, KnowledgeChunk, ProductFilters, Source
 
 
@@ -41,11 +41,8 @@ class DemoRepository:
             row = deepcopy(self.product_map[pid])
             row["winery_name"] = self.winery_map[row["winery_id"]]["name"]
             row["region_name"] = self.catalog.get(row.get("region_id"), {}).get("name")
-            prices = [r for r in self.dataset.tables["price_observations"] if r["product_id"] == pid and eligible_price(r, row, self.settings)]
-            if prices:
-                row["eligible_price"] = max(prices, key=lambda r: (r["verified_at"], r["price_id"]))
             rows.append(row)
-        return rows
+        return attach_prices(rows, self.dataset.tables["price_observations"], self.settings)
 
     def wineries(self, winery_ids: list[str]) -> list[dict]:
         return [deepcopy(self.winery_map[w]) for w in dict.fromkeys(winery_ids) if w in self.winery_map]

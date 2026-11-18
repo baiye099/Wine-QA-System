@@ -11,6 +11,7 @@ from collections import Counter
 from pathlib import Path
 
 from clean import ID_KEYS, REL_TYPES, ROOT, read_jsonl, sha256
+from fill_nulls import field_is_filled
 
 
 def schema_errors(value, schema: dict, path: str = "record") -> list[str]:
@@ -91,6 +92,9 @@ def validate_directory(output: Path, raw: Path) -> dict:
                 se = schema_errors(record, schema["$defs"][name], f"{name}:{record.get(id_key)}")
                 checks["schema"] += 1
                 errors.extend(se)
+                if "null_fill" in record:
+                    for field in record["null_fill"].get("fields", {}):
+                        check(field_is_filled(record, field), f"{name}: invalid null-fill lineage {field}", "null_fill_provenance")
                 all_tables[name].append(record)
         ids = [r[id_key] for r in all_tables[name]]
         check(len(ids) == len(set(ids)), f"duplicate IDs: {name}", "uniqueness")
@@ -125,7 +129,9 @@ def validate_directory(output: Path, raw: Path) -> dict:
     for p in all_products.values():
         check(p["winery_id"] in all_wineries, f"{p['product_id']}: winery missing", "foreign_keys")
         check((p["vintage"] is not None) == (p["vintage_status"] == "specified"), f"{p['product_id']}: vintage inconsistency", "business")
-        check(p["price_cny"] is None, f"{p['product_id']}: reference price leaked into product", "business")
+        generated_price = (field_is_filled(p, "price_cny") and
+                           p["null_fill"]["fields"]["price_cny"]["origin"] == "generated" and p["price_cny"] > 0)
+        check(p["price_cny"] is None or generated_price, f"{p['product_id']}: untracked price entered product", "business")
         if p["review_status"] == "accepted":
             check(p["winery_id"] in accepted_nodes, f"{p['product_id']}: accepted product has nonaccepted parent", "foreign_keys")
             check(p["record_scope"] != "catalog_candidate", f"{p['product_id']}: catalog in formal data", "business")
@@ -201,12 +207,16 @@ def validate_directory(output: Path, raw: Path) -> dict:
     if "P003" in all_products:
         check(all_products["P003"]["grape_varieties"] == [] and not all_products["P003"]["field_filter_eligibility"]["grape_varieties"], "P003 conflicted grapes enabled", "regression")
     if "P002" in all_products:
-        check(all_products["P002"]["color"] is None, "P002 inferred color from grape variety", "regression")
+        p002 = all_products["P002"]
+        check(p002["color"] is None or (field_is_filled(p002, "color") and not p002["field_filter_eligibility"]["color"]),
+              "P002 untracked color or synthetic color enabled as verified filter", "regression")
     if "P014" in all_products:
         check(all_products["P014"]["review_status"] == "review" and not all_products["P014"]["strict_product_filter_eligible"],
               "P014 directory + unavailable details promoted to formal", "regression")
     if "W009" in all_wineries:
-        check(all_wineries["W009"]["founded_year"] is None and all_wineries["W009"]["company_founded_year"] == 2018, "W009 company/winery year mixed", "regression")
+        w009 = all_wineries["W009"]
+        check((w009["founded_year"] is None or (field_is_filled(w009, "founded_year") and w009["founded_year"] >= 2018))
+              and w009["company_founded_year"] == 2018, "W009 company/winery year mixed or untracked generated year", "regression")
     if "P055" in all_products:
         check(all_products["P055"]["vintage"] is None and all_products["P055"]["vintage_status"] == "non_vintage", "P055 base year used as vintage", "regression")
     if "P043" in all_products:

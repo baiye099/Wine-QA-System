@@ -1,6 +1,12 @@
 # MySQL与Neo4j导入脚本说明
 
-这些文件已经准备好，由你自行执行导入。编写阶段仅完成SQL生成、JSONL预检查与离线测试，没有连接、创建或写入任何MySQL/Neo4j实例。
+2026-11-16 已按用户审核后的自然风格方案补齐533处空值，并将主 `data` 同步到 MySQL `Wine_QA_System` 和 Neo4j `wine-qa-system`。两套数据库的实际字段已核对通过，剩余101处为空值方案中保留的日期、NV年份及非赛事奖项字段。记录数量保持：正式知识228条、MySQL来源84条、统一实体269条，Neo4j业务节点581个、关系746条。
+
+实际结果见 `null_fill_execution_report.json`、`database_import_report.json`、`mysql_import_report.json`、`neo4j_import_report.json` 和 `backend_check_report.json`。逐字段填充值及来源见 `data/audit/null_fill_changes.jsonl`；业务字段中的自然名称与后台 `null_fill` 来源标记分开保存。
+本次填充前的完整数据位于 `work/null_fill_20261116_a0e0cd5b72c5/baseline_data`，数据库原记录与228条原向量备份位于同级 `database_before`。
+合并前完整数据位于 `work/data_merge_20261115_b97e7d737f92/baseline_data`，数据库原记录及原有向量备份位于该目录同级的 `database_before`。这些本地备份不公开。
+
+2026-11-15 已按用户许可仅向SiliconFlow发送新增的90条知识文本，完成90条向量构建；历史结果保留在 `embedding_build_report.json`。本次空值填充未调用外部模型，228条知识正文、原向量及向量元数据前后哈希一致，当前全部就绪，结果见 `null_fill_execution_report.json` 和 `backend_check_report.json`。此前的3条本地检索链路检查不是独立问答质量评测。
 
 ## 1. 文件与执行顺序
 
@@ -12,6 +18,7 @@
 | `02_data_mysql.sql` | 已根据当前正式JSONL生成的数据写入SQL，直接执行即可 |
 | `03_verify_mysql.sql` | 只读数量、引用及筛选查询检查 |
 | `import_neo4j.py` | 读取正式JSONL，导入节点、别名属性与关系 |
+| `import_databases.py` | 使用本地配置同步两套数据库，导入前备份、事务内验证与导入后核对；默认只显示计划 |
 | `requirements.txt` | Neo4j Python驱动依赖 |
 | `dataset.py` | 共用的JSONL读取、manifest哈希与引用校验 |
 | `generate_mysql_sql.py` | 数据更新后重新生成三份MySQL SQL；不执行数据库 |
@@ -49,18 +56,18 @@ SOURCE E:/PythonProject/NLP/QASystem/database/03_verify_mysql.sql;
 
 | 表 | 数量 | 内容 |
 |---|---:|---|
-| source_document | 49 | 来源登记，包括证据形式与原访问状态 |
-| entity_registry | 170 | 酒庄、产品、产区、品种、风味与概念的统一ID目录 |
+| source_document | 84 | 来源登记，包括证据形式与原访问状态 |
+| entity_registry | 269 | 酒庄、产品、产区、品种、风味与概念的统一ID目录 |
 | region | 8 | 产区或行政区域，保留region_kind |
 | winery | 22 | 酒庄基础信息，区分公司成立年 |
-| grape_variety | 11 | 明确出现的葡萄品种 |
+| grape_variety | 17 | 明确出现的葡萄品种 |
 | product | 47 | 产品及年份、容量、参数、字段筛选资格 |
 | product_grape | 51 | 有依据的产品与品种关系、已披露比例 |
 | price_observation | 10 | 正式可追溯的参考报价，不是当前零售价 |
-| entity_alias | 191 | 多类型别名，外键关联统一实体目录 |
+| entity_alias | 236 | 多类型别名，外键关联统一实体目录 |
 | professional_review | 30 | 来源专业评价、赛事或商家描述，保持具体年份范围 |
 
-`entity_registry`是共享ID及别名目标目录，其记录与具体业务表存在对应，不代表新增170款产品。
+`entity_registry`是共享ID及别名目标目录，其记录与具体业务表存在对应，不代表新增269款产品。
 
 复杂元数据通过JSON列保留；`raw_record`保存用于导入的完整清洗记录及必要派生字段，原始位置仍由其中raw_locator追溯。不是重新保存网页原文。
 
@@ -68,7 +75,8 @@ SOURCE E:/PythonProject/NLP/QASystem/database/03_verify_mysql.sql;
 
 ### MySQL查询注意事项
 
-- `product.price_cny`本批为空，不能从历史报价自动填充。
+- `product.price_cny`含经用户审核生成的展示金额，逐字段来源保存在 `raw_record.null_fill`；这些金额不是已核验的当前零售价。
+- 2026-11-17 问答层已接入这些展示金额，产品问价和预算筛选默认可用，输出明确标为生成数据。`QA_DISPLAY_PRICE_ENABLED`控制展示金额，`QA_PRICE_ENABLED`独立控制已核验零售报价；本次接入未修改数据库。
 - 当前零售价资格标志均为false，`v_eligible_retail_price`本批应为空。将来有已核验报价后，应用还需检查核验时间是否处于实际时效窗口。
 - `v_product_basic`提供产品、酒庄和产区联合视图。
 - 每个筛选条件必须同时检查 `field_filter_eligibility`；仅检查总资格不足以判断所有字段可用。
@@ -104,22 +112,22 @@ python database/import_neo4j.py --uri bolt://localhost:7687 --user neo4j --datab
 
 ### 节点与关系
 
-预计 **357个业务节点、538条关系**。别名保存为节点属性，不额外创建191个别名节点。
+当前实际导入 **581个业务节点、746条关系**。别名保存为节点属性，不额外创建236个别名节点。
 
 | 标签 | 数量 | 业务ID属性 |
 |---|---:|---|
-| Document | 49 | source_id |
+| Document | 84 | source_id |
 | Winery | 22 | winery_id |
 | Product | 47 | product_id |
 | Region | 8 | entity_id |
-| GrapeVariety | 11 | entity_id |
+| GrapeVariety | 17 | entity_id |
 | Flavor | 52 | entity_id |
-| Concept | 30 | entity_id |
-| Chunk | 138 | knowledge_id |
+| Concept | 123 | entity_id |
+| Chunk | 228 | knowledge_id |
 
 所有节点额外具有 `QAEntity` 标签与统一 `entity_id`，并建立唯一约束。这些ID与JSONL/MySQL一致，不使用Neo4j内部节点编号。
 
-关系按 `relations.jsonl` 原样导入：HAS_CHUNK 143、ABOUT 185、PRODUCES 47、LOCATED_IN 22、ORIGINATES_FROM 13、MADE_FROM 51、HAS_FLAVOR 77。没有来源依据的区域层级不补建。
+关系按 `relations.jsonl` 原样导入：HAS_CHUNK 233、ABOUT 303、PRODUCES 47、LOCATED_IN 22、ORIGINATES_FROM 13、MADE_FROM 51、HAS_FLAVOR 77。没有来源依据的区域层级不补建。
 
 `aliases`为别名数组，`alias_keys`为移除空白并casefold后的匹配键。Product上的 `filter_color`、`filter_volume_ml` 等属性对应原字段资格。嵌套对象使用 `_json` 后缀字符串保存，如 `field_filter_eligibility_json`；Neo4j属性不直接保存嵌套map。
 
@@ -200,7 +208,21 @@ python -m unittest discover -s database -p test_scripts.py -v
 
 覆盖中文/引号/反斜杠、JSON类型、列映射与长度、引用关系、Neo4j属性类型、固定标签/关系白名单、事务写入顺序、失败检测、dry-run不联网及数据哈希变化检测。
 
-SQL已根据当前正式数据生成，Neo4j已完成离线计划检查；未在真实MySQL或Neo4j服务器执行，所以实际导入成功与否应以你执行后的SQL校验和导入报告为准。
+SQL已根据当前正式数据重新生成，两套真实数据库已经导入并验证。数据库导入离线测试23项、后端离线测试22项、清洗/合并/填充边界测试32项通过。
+
+## 6. 统一导入工具
+
+在已安装项目依赖的Python环境执行；本机使用 `E:/Anaconda/envs/nlpbase_GPU/python.exe`。
+
+```powershell
+python database/import_databases.py
+```
+
+默认只读取本地正式数据并显示计划，不连接数据库。实际导入使用 `--apply --backup-dir work/新的备份目录`，可通过 `--base-dir` 指定本次升级前的完整数据副本，检查数据库是否仍匹配旧版本。
+工具使用本地 `.env`，不会将密码写入命令行或报告；写入采用参数绑定和同ID更新。只导入正式根目录JSONL，保留原有知识、产品及其字段。
+
+MySQL写入和逐字段验证位于同一事务，Neo4j沿用现有单事务导入与归属检查。两套数据库不提供跨库原子提交；发生部分成功时应依据实际报告与备份处理。
+`--build-vectors` 会调用已配置的外部向量服务，须在获得发送知识文本的许可后使用。单独构建向量仍可用 `python -m scripts.build_embeddings`。
 
 ## 官方实现参考
 

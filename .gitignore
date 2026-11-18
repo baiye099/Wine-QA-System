@@ -20,3 +20,7 @@ __pycache__/
 /data/excluded/
 /data/audit/
 
+# 可复现的增量清洗生成物和本机数据库执行报告。
+/data_cleaning/wine_general_knowledge_20261111/
+/database/*_report.json
+

@@ -24,6 +24,7 @@ class Settings(BaseModel):
     snapshot: str = ""
     max_results: int = Field(default=10, ge=1, le=50)
     price_enabled: bool = False
+    display_price_enabled: bool = True
     price_max_age_days: int = Field(default=30, ge=1, le=365)
     mysql_host: str = "127.0.0.1"
     mysql_port: int = Field(default=3306, ge=1, le=65535)
@@ -72,7 +73,7 @@ class Settings(BaseModel):
         values.update(os.environ if env is None else env)
         names = {"backend": "QA_BACKEND", "data_dir": "QA_DATA_DIR", "dataset": "QA_DATASET",
                  "snapshot": "QA_SNAPSHOT", "max_results": "QA_MAX_RESULTS", "price_enabled": "QA_PRICE_ENABLED",
-                 "price_max_age_days": "QA_PRICE_MAX_AGE_DAYS"}
+                  "price_max_age_days": "QA_PRICE_MAX_AGE_DAYS", "display_price_enabled": "QA_DISPLAY_PRICE_ENABLED"}
         kwargs = {}
         for field in cls.model_fields:
             value = values.get(names.get(field, field.upper()))
